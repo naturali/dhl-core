@@ -10,5 +10,13 @@
   },
   "author": "",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "@types/websocket": "0.0.40",
+    "axios": "^0.18.0",
+    "protobufjs": "^6.8.8",
+    "tslint": "^5.12.1",
+    "tslint-config-airbnb": "^5.11.1",
+    "typescript": "^3.2.4",
+    "websocket": "^1.0.28"
+  }
 }
