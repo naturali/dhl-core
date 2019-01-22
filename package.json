@@ -1,10 +1,11 @@
 {
-  "name": "ts-lib",
+  "name": "dhl-core",
   "version": "1.0.0",
-  "description": "",
+  "description": "Web SDK of Duihualiu",
   "main": "build/index.js",
   "typings": "build/index.d.ts",
   "scripts": {
+    "dev": "tsc -w",
     "build": "tsc",
     "test": "mocha"
   },

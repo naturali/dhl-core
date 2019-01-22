@@ -4,20 +4,39 @@ import { w3cwebsocket } from 'websocket';
 import { dhlmixer, dhl } from './../static/js/dhl';
 import { restfulAddr, websocketAddr } from './config';
 
-interface DHLAgentInfo {
+export interface DHLAgentInfo {
   agentId: string;
   agentName?: string;
 }
 
-interface DHLAppInfo {
+export interface DHLAppInfo {
   appId: string;
   appKey: string;
   appSecret: string;
 }
 
+export interface DHLUserInfo {
+  userId: string;
+  userName: string;
+}
+
+export interface SendMessageParamsInfo {
+  message: string;
+  messageContentType: dhlmixer.MessageContentType;
+  forceHandleManually: boolean;
+}
+
+export interface DHLConnectParams {
+  userId: string;
+  isCustomerService: boolean;
+  userName?: string;
+}
+
 const defaultAgentName = 'DHL-agent';
 export class DHL {
   private agent: DHLAgentInfo;
+  private app: DHLAppInfo;
+  private user: DHLUserInfo;
   private token: string;
   private client: any;
 
@@ -25,13 +44,14 @@ export class DHL {
     this.agent = { ...agent };
   }
 
-  async verify(app: DHLAppInfo) {
+  async verify(app: DHLAppInfo, callback?: (token: string) => void) {
     console.log('get verify app: ', app);
 
     const MessageType = dhlmixer.AuthenticationParams;
     const message = MessageType.create(app);
     const buffer = MessageType.encode(message).finish();
 
+    this.app = { ...app };
     this.token = await axios
       .post(`${restfulAddr}/v1/access_token`, buffer, {
         headers: {
@@ -56,12 +76,24 @@ export class DHL {
 
         return responseData;
       });
+    if (callback) {
+      callback(this.token);
+    }
   }
 
-  connectWebsocket(appId: string, userId: string, isCustomerService: boolean, seq?: string) {
+  connectWebsocket(params: DHLConnectParams, onMessage: (message: string, messageType: string, res: any) => void, onOpen?: () => void, onClose?: () => void, onError?: (error: any) => void) {
+    const { userId, userName, isCustomerService } = params;
+
+    if (userId) {
+      this.user = {
+        userId,
+        userName: userName || userId
+      };
+    }
+
     if (!this.client) {
       this.client = new w3cwebsocket(
-        `${websocketAddr}/v1/event_action?Authorization=${token}`,
+        `${websocketAddr}/v1/event_action?Authorization=${this.token}`,
         'event_action',
         undefined,
         undefined,
@@ -81,13 +113,13 @@ export class DHL {
       console.log('in onopen: WebSocket Client Connected pollForKefuResponse.');
       const defaultSeq = 'server-client-seq';
       const message = dhlmixer.KerfuAction.create({
-        seq: seq || defaultSeq,
+        seq: defaultSeq,
         action: dhlmixer.Action.Authentication,
         authenticationData: dhlmixer.KerfuAuthenticationData.create({
-          appId,
           userId,
           isCustomerService,
-          platformType: 'Web'
+          platformType: 'Web',
+          appId: this.app.appId
         })
       });
       const buffer = dhlmixer.KerfuAction.encode(message).finish();
@@ -115,7 +147,7 @@ export class DHL {
 
         if (response && response.event === 'MessagePosted') {
           const responseData = response.message_posted_data || {};
-          // this.getHistoryMessages(token, responseData);
+          this.getHistoryMessages(responseData, onMessage);
         }
       };
       fileReader.readAsArrayBuffer(resData);
@@ -130,7 +162,7 @@ export class DHL {
     }, 100);
   }
 
-  getHistoryMessages(params: any, callback: Function) {
+  getHistoryMessages(params: any, callback: (message: string, messageType: string, res: any) => void) {
     axios.get(`${ restfulAddr }/v1/message_history`, {
       params,
       headers: {
@@ -147,12 +179,84 @@ export class DHL {
       const messageType = message && message.response && message.response.message_content_type || 'text';
 
       if (callback) {
-        callback(responseMessage, message, messageType.toLowerCase());
+        callback(responseMessage, messageType.toLowerCase(), message);
       }
     });
   }
 
-  send(message: string) {
-    //
+  send(params: SendMessageParamsInfo, callback: (message: string, messageType: string, res: any) => void) {
+    const { message, messageContentType, forceHandleManually } = params;
+    const dateTime = new Date().getTime();
+    console.log('get message in send: ', params);
+
+    if (message) {
+      const MessageType = dhlmixer.KerfuMessage;
+      const messageData = {
+        appId: this.app.appId,
+        userId: this.user.userId,
+        agentId: this.agent.agentId,
+        agentName: this.agent.agentName,
+        messageId: 0,
+        sessionId: 0,
+        messageType: dhlmixer.KerfuMessageType.Request,
+        platformType: 'kerfu_web',
+        userName: this.user.userName || this.user.userId,
+        timestamp: dateTime,
+        request: dhlmixer.DHLMixerRequestData.create({
+          message,
+          messageContentType,
+          forceHandleManually,
+          dhlRequestType: dhl.DHLRequestType.Normal,
+          reqId: `customer-request-${ dateTime }`
+        })
+      };
+      console.log('get message before send: ', messageData);
+      const paramsMessage = MessageType.create(messageData);
+      // const verify = MessageType.verify(messageData);
+
+      console.log('get message & verify here: ', message);
+      const buffer = MessageType.encode(paramsMessage).finish();
+
+      axios.post(`${ restfulAddr }/v1/kerfu_messages`, buffer, {
+        headers: {
+          accept: 'application/protobuf',
+          'content-type': 'application/protobuf',
+          Authorization: this.token
+        },
+        responseType: 'arraybuffer',
+        transformRequest: (reqData, headers) => reqData,
+        transformResponse: resData => resData
+      }).then((res: any) => {
+        console.log('get res after send: ', res);
+        const responseBuffer = res.data;
+
+        if (res.status === 200 && responseBuffer) {
+          const resData = new Buffer(responseBuffer);
+          const responseData = dhlmixer.KerfuResponse.decode(resData).toJSON();
+          const messageType = responseData.message && responseData.message.response && responseData.message.response.message_content_type || 'text';
+          const responseMessage = responseData.message && responseData.message.response && responseData.message.response.dhl_script && responseData.message.response.dhl_script.message || '';
+
+          callback(responseMessage, messageType, res.data);
+        }
+      });
+
+      // this.addConversation(inputValue, 'local', inputType);
+    }
+  }
+
+  static uploadImage(file: any, callback: (res: any) => void) {
+    if (file) {
+      const formData = new FormData();
+
+      formData.append('image', file);
+      axios.post(`${ restfulAddr }/v1/resources`, formData, {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      }).then((res: any) => {
+        console.log('get res in uploadImage: ', res);
+        callback(res.data);
+      });
+    }
   }
 }
