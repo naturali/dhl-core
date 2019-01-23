@@ -10,6 +10,10 @@ npm install dhl-core --save
 yarn add dhl-core
 ```
 
+```javascript
+<script src="https://dhl-sdk.oss-cn-beijing.aliyuncs.com/web_sdk/1.0.0/dhl.js"></script>
+```
+
 ## 🔨 Usage
 ### from node_modules
 ```typescript
@@ -19,6 +23,17 @@ const client = new DHL({
   agentId: '<your agent id>',
   agentName: '<your agent name>'
 });
+```
+
+### from CDN
+```javascript
+<script src="https://dhl-sdk.oss-cn-beijing.aliyuncs.com/web_sdk/1.0.0/dhl.js"></script>
+<script>
+  var client = new DHL({
+    agentId: '<your agent id>',
+    agentName: '<your agent name>'
+  });
+</script>
 ```
 
 ## 🌈 Methods
