@@ -7,6 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = require("axios");
 const websocket_1 = require("websocket");
@@ -195,4 +198,5 @@ class DHL {
     }
 }
 exports.DHL = DHL;
+__export(require("./../static/js/dhl"));
 //# sourceMappingURL=index.js.map

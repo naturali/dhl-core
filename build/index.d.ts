@@ -35,3 +35,4 @@ export declare class DHL {
     send(params: SendMessageParamsInfo, callback: (message: string, messageType: string, res: any) => void): void;
     static uploadImage(file: any, callback: (res: any) => void): void;
 }
+export * from './../static/js/dhl';

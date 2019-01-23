@@ -259,3 +259,5 @@ export class DHL {
     }
   }
 }
+
+export * from './../static/js/dhl';
