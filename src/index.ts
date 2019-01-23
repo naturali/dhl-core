@@ -146,7 +146,7 @@ export class DHL {
         console.log('get response in client.onmessage: ', response);
 
         if (response && response.event === 'MessagePosted') {
-          const responseData = response.message_posted_data || {};
+          const responseData = response.messagePostedData || {};
           this.getHistoryMessages(responseData, onMessage);
         }
       };
@@ -162,7 +162,7 @@ export class DHL {
     }, 100);
   }
 
-  getHistoryMessages(params: any, callback: (message: string, messageType: string, res: any) => void) {
+  private getHistoryMessages(params: any, callback: (message: string, messageType: string, res: any) => void) {
     axios.get(`${ restfulAddr }/v1/message_history`, {
       params,
       headers: {
@@ -176,7 +176,7 @@ export class DHL {
       const response = dhlmixer.KerfuMessageList.decode(buffer).toJSON();
       const message = response && response.messages && response.messages[0];
       const responseMessage = message && message.response && message.response.message || '';
-      const messageType = message && message.response && message.response.message_content_type || 'text';
+      const messageType = message && message.response && message.response.messageContentType || 'text';
 
       if (callback) {
         callback(responseMessage, messageType.toLowerCase(), message);
@@ -233,14 +233,13 @@ export class DHL {
         if (res.status === 200 && responseBuffer) {
           const resData = new Buffer(responseBuffer);
           const responseData = dhlmixer.KerfuResponse.decode(resData).toJSON();
-          const messageType = responseData.message && responseData.message.response && responseData.message.response.message_content_type || 'text';
-          const responseMessage = responseData.message && responseData.message.response && responseData.message.response.dhl_script && responseData.message.response.dhl_script.message || '';
+          const messageType = responseData.message && responseData.message.response && responseData.message.response.messageContentType || 'text';
+          const responseMessage = responseData.message && responseData.message.response && responseData.message.response.dhlScript && responseData.message.response.dhlScript.message || '';
 
-          callback(responseMessage, messageType, res.data);
+          // console.log('get decode data after send: ', responseMessage, messageType, responseData);
+          callback(responseMessage, messageType.toLowerCase(), res.data);
         }
       });
-
-      // this.addConversation(inputValue, 'local', inputType);
     }
   }
 

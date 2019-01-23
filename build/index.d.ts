@@ -31,7 +31,7 @@ export declare class DHL {
     constructor(agent: DHLAgentInfo);
     verify(app: DHLAppInfo, callback?: (token: string) => void): Promise<void>;
     connectWebsocket(params: DHLConnectParams, onMessage: (message: string, messageType: string, res: any) => void, onOpen?: () => void, onClose?: () => void, onError?: (error: any) => void): void;
-    getHistoryMessages(params: any, callback: (message: string, messageType: string, res: any) => void): void;
+    private getHistoryMessages;
     send(params: SendMessageParamsInfo, callback: (message: string, messageType: string, res: any) => void): void;
     static uploadImage(file: any, callback: (res: any) => void): void;
 }
