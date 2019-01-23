@@ -199,4 +199,9 @@ class DHL {
 }
 exports.DHL = DHL;
 __export(require("./../static/js/dhl"));
+if (window) {
+    window.DHL = DHL;
+    window.dhl = dhl_1.dhl;
+    window.dhlmixer = dhl_1.dhlmixer;
+}
 //# sourceMappingURL=index.js.map

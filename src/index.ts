@@ -261,3 +261,9 @@ export class DHL {
 }
 
 export * from './../static/js/dhl';
+
+if (window) {
+  (window as any).DHL = DHL;
+  (window as any).dhl = dhl;
+  (window as any).dhlmixer = dhlmixer;
+}
