@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dhl;
 
+import "dhl_response.proto";
+
 option go_package = "p";
 
 option java_multiple_files = true;
@@ -10,21 +12,7 @@ option java_package = "io.naturali.common.dhl";
 enum DHLRequestType {
     Normal = 0; // normal request
     AgentList = 1; // get agent
-    WelcomeMessage = 2;  // get welcome message
-}
-
-message TextResponse {
-    repeated string contents = 1;
-}
-
-message CardResponse {
-    string title = 1;
-    string description = 2;
-    string image_url = 3;
-    string deep_link = 4;
-    string script = 5;
-    string pre_card_text = 6;
-    string post_card_text = 7;
+    WelcomeMessage = 2; // get welcome message
 }
 
 message DHLAgentInfo {
@@ -32,7 +20,7 @@ message DHLAgentInfo {
     string name = 2;
     string org = 3;
     string description = 4;
-    string icon_url  = 5;
+    string icon_url = 5;
     string type = 6;
 }
 
@@ -48,9 +36,26 @@ message Script {
     }
 }
 
+message ChatMessage {
+    oneof chat_message {
+        string text_msg = 1;
+        CardResponse card_msg = 2;
+        string image_response_url = 3;
+    }
+}
+
+message DHLChatResponse {
+    repeated ChatMessage msgs = 1;
+    repeated string candidates = 2; // should this be in ChatMessage instead?
+}
+
 message DHLScript {
-    Script script = 1;
-    repeated string candidates = 2;
+    Script script = 1; // TODO delete after dhl_response is set properly
+    repeated string candidates = 2; // TODO delete after dhl_response is set properly
     string modified_query = 3;
     string message = 4;
+    oneof dhl_response {
+        DHLAgentResponse agent_response = 5;
+        DHLChatResponse chat_response = 6;
+    }
 }

@@ -3,6 +3,7 @@ syntax = "proto3";
 package dhlmixer;
 
 import "dhl.proto";
+import "dynamic_entity.proto";
 
 option go_package = "p";
 
@@ -72,8 +73,8 @@ message DHLMixerRequest {
 }
 
 message DHLMixerError {
-   int32 error_code = 1;
-   string error_message = 2;
+    int32 error_code = 1;
+    string error_message = 2;
 }
 
 message KerfuPollRequest {
@@ -138,6 +139,7 @@ enum KerfuMessageType {
     Any = 0;
     Request = 1;
     Response = 2;
+    PhantomResponse = 4;
 }
 
 enum MessageContentType {
@@ -162,6 +164,7 @@ message DHLMixerRequestData {
     MessageContentType message_content_type = 5;
     bool force_handle_manually = 6;
     dhl.DHLRequestType dhl_request_type = 7; // dhl request type; reference dhl.proto
+    repeated dhl.DynamicEntity dynamic_entities = 8;
 }
 
 message DHLMixerResponseData {
@@ -171,9 +174,9 @@ message DHLMixerResponseData {
     MessageContentType message_content_type = 4;
     ResponseType response_type = 5;
     dhl.DHLScript dhl_script = 6;
-    string customer_service_platform = 7;
-    string customer_service_app_id = 8;
-    string customer_service_uid = 9;
+    string support_platform = 7;
+    string support_app = 8;
+    string support_uid = 9;
 }
 
 message KerfuMessage {
@@ -194,8 +197,8 @@ message KerfuMessage {
 }
 
 message KerfuError {
-   int32 error_code = 1;
-   string error_message = 2;
+    int32 error_code = 1;
+    string error_message = 2;
 }
 
 message KerfuMessageAck {
@@ -205,7 +208,7 @@ message KerfuMessageAck {
 
 message KerfuResponse {
     KerfuMessageAck ack = 1;
-    KerfuMessage message = 2;
+    repeated KerfuMessage messages = 2;
 }
 
 message KerfuMessageFilter {
@@ -224,6 +227,7 @@ message KerfuMessageList {
 
 enum Action {
     Authentication = 0;
+    EndConversation = 1;
 }
 
 enum Event {
@@ -235,7 +239,14 @@ message KerfuAuthenticationData {
     string platform_type = 1;
     string app_id = 2;
     string user_id = 3;
-    bool is_customer_service = 4;
+    bool is_support = 4;
+}
+
+message EndConversationData {
+    string platform_type = 1;
+    string app_id = 2;
+    string user_id = 3;
+    string agent_id = 4;
 }
 
 message KerfuAction {
@@ -243,6 +254,7 @@ message KerfuAction {
     Action action = 2;
     oneof data {
         KerfuAuthenticationData authentication_data = 3;
+        EndConversationData end_conversation_data = 4;
     }
 }
 
@@ -274,3 +286,4 @@ message AuthenticationParams {
 message AccessToken {
     string access_token = 2;
 }
+

@@ -15,14 +15,15 @@ const axios_1 = require("axios");
 const websocket_1 = require("websocket");
 const dhl_1 = require("./../static/js/dhl");
 const config_1 = require("./config");
-const defaultAgentName = 'DHL-agent';
+const util_1 = require("./util");
 class DHL {
     constructor(agent) {
+        util_1.fieldValidate(agent, ['agentId']);
         this.agent = Object.assign({}, agent);
     }
     verify(app, callback) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('get verify app: ', app);
+            util_1.fieldValidate(app, ['appId', 'appKey', 'appSecret']);
             const MessageType = dhl_1.dhlmixer.AuthenticationParams;
             const message = MessageType.create(app);
             const buffer = MessageType.encode(message).finish();
@@ -40,10 +41,8 @@ class DHL {
                 .then((res) => {
                 const responseBuffer = res.data;
                 let responseData = '';
-                console.log('get access token in getAccessToken: ', res, res.data);
                 if (res.status === 200 && responseBuffer) {
                     const resData = new Buffer(responseBuffer);
-                    console.log('get response buffer: ', resData);
                     responseData = dhl_1.dhlmixer.AccessToken.decode(resData).accessToken || '';
                 }
                 return responseData;
@@ -54,6 +53,7 @@ class DHL {
         });
     }
     connectWebsocket(params, onMessage, onOpen, onClose, onError) {
+        util_1.fieldValidate(params, ['userId', 'isCustomerService']);
         const { userId, userName, isCustomerService } = params;
         if (userId) {
             this.user = {
@@ -66,11 +66,12 @@ class DHL {
                 closeTimeout: 3600000
             });
         }
-        this.client.onerror = (err) => {
-            console.log('Connection Error: ', err);
+        this.client.onerror = (error) => {
+            if (onError) {
+                onError(error);
+            }
         };
         this.client.onopen = () => {
-            console.log('in onopen: WebSocket Client Connected pollForKefuResponse.');
             const defaultSeq = 'server-client-seq';
             const message = dhl_1.dhlmixer.KerfuAction.create({
                 seq: defaultSeq,
@@ -84,19 +85,22 @@ class DHL {
             });
             const buffer = dhl_1.dhlmixer.KerfuAction.encode(message).finish();
             this.client.send(buffer);
+            if (onOpen) {
+                onOpen();
+            }
         };
         this.client.onclose = () => {
-            console.log('server_protocol Client Closed');
+            if (onClose) {
+                onClose();
+            }
         };
         this.client.onmessage = (res) => {
-            console.log('get res in client.onmessage: ', res);
             const resData = res.data;
             const fileReader = new FileReader();
             fileReader.onload = (event) => {
                 const bufferData = event.target.result;
-                console.log('get arrayBuffer: ', bufferData);
                 const response = dhl_1.dhlmixer.KerfuEvent.decode(new Buffer(bufferData)).toJSON();
-                console.log('get response in client.onmessage: ', response);
+                console.log('get response in fileReader: ', response);
                 if (response && response.event === 'MessagePosted') {
                     const responseData = response.messagePostedData || {};
                     this.getHistoryMessages(responseData, onMessage);
@@ -104,12 +108,6 @@ class DHL {
             };
             fileReader.readAsArrayBuffer(resData);
         };
-        setTimeout(() => {
-            const content = document.getElementById('conversation-content');
-            if (content) {
-                content.scrollTo(0, content.scrollHeight);
-            }
-        }, 100);
     }
     getHistoryMessages(params, callback) {
         axios_1.default.get(`${config_1.restfulAddr}/v1/message_history`, {
@@ -126,15 +124,16 @@ class DHL {
             const message = response && response.messages && response.messages[0];
             const responseMessage = message && message.response && message.response.message || '';
             const messageType = message && message.response && message.response.messageContentType || 'text';
+            console.log('get res in getHistoryMessages: ', response);
             if (callback) {
                 callback(responseMessage, messageType.toLowerCase(), message);
             }
         });
     }
     send(params, callback) {
+        util_1.fieldValidate(params, ['message', 'messageContentType', 'forceHandleManually']);
         const { message, messageContentType, forceHandleManually } = params;
         const dateTime = new Date().getTime();
-        console.log('get message in send: ', params);
         if (message) {
             const MessageType = dhl_1.dhlmixer.KerfuMessage;
             const messageData = {
@@ -156,9 +155,7 @@ class DHL {
                     reqId: `customer-request-${dateTime}`
                 })
             };
-            console.log('get message before send: ', messageData);
             const paramsMessage = MessageType.create(messageData);
-            console.log('get message & verify here: ', message);
             const buffer = MessageType.encode(paramsMessage).finish();
             axios_1.default.post(`${config_1.restfulAddr}/v1/kerfu_messages`, buffer, {
                 headers: {
@@ -170,13 +167,13 @@ class DHL {
                 transformRequest: (reqData, headers) => reqData,
                 transformResponse: resData => resData
             }).then((res) => {
-                console.log('get res after send: ', res);
                 const responseBuffer = res.data;
                 if (res.status === 200 && responseBuffer) {
                     const resData = new Buffer(responseBuffer);
                     const responseData = dhl_1.dhlmixer.KerfuResponse.decode(resData).toJSON();
                     const messageType = responseData.message && responseData.message.response && responseData.message.response.messageContentType || 'text';
                     const responseMessage = responseData.message && responseData.message.response && responseData.message.response.dhlScript && responseData.message.response.dhlScript.message || '';
+                    console.log('get responseData after send: ', responseData);
                     callback(responseMessage, messageType.toLowerCase(), res.data);
                 }
             });
@@ -191,9 +188,11 @@ class DHL {
                     'content-type': 'multipart/form-data'
                 }
             }).then((res) => {
-                console.log('get res in uploadImage: ', res);
                 callback(res.data);
             });
+        }
+        else {
+            throw Error(('File is missing.'));
         }
     }
 }

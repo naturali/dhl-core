@@ -3910,12 +3910,14 @@ $root.dhlmixer = (function() {
      * @property {number} Any=0 Any value
      * @property {number} Request=1 Request value
      * @property {number} Response=2 Response value
+     * @property {number} PhantomResponse=4 PhantomResponse value
      */
     dhlmixer.KerfuMessageType = (function() {
         var valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "Any"] = 0;
         values[valuesById[1] = "Request"] = 1;
         values[valuesById[2] = "Response"] = 2;
+        values[valuesById[4] = "PhantomResponse"] = 4;
         return values;
     })();
 
@@ -3968,6 +3970,7 @@ $root.dhlmixer = (function() {
          * @property {dhlmixer.MessageContentType|null} [messageContentType] DHLMixerRequestData messageContentType
          * @property {boolean|null} [forceHandleManually] DHLMixerRequestData forceHandleManually
          * @property {dhl.DHLRequestType|null} [dhlRequestType] DHLMixerRequestData dhlRequestType
+         * @property {Array.<dhl.IDynamicEntity>|null} [dynamicEntities] DHLMixerRequestData dynamicEntities
          */
 
         /**
@@ -3979,6 +3982,7 @@ $root.dhlmixer = (function() {
          * @param {dhlmixer.IDHLMixerRequestData=} [properties] Properties to set
          */
         function DHLMixerRequestData(properties) {
+            this.dynamicEntities = [];
             if (properties)
                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -4042,6 +4046,14 @@ $root.dhlmixer = (function() {
         DHLMixerRequestData.prototype.dhlRequestType = 0;
 
         /**
+         * DHLMixerRequestData dynamicEntities.
+         * @member {Array.<dhl.IDynamicEntity>} dynamicEntities
+         * @memberof dhlmixer.DHLMixerRequestData
+         * @instance
+         */
+        DHLMixerRequestData.prototype.dynamicEntities = $util.emptyArray;
+
+        /**
          * Creates a new DHLMixerRequestData instance using the specified properties.
          * @function create
          * @memberof dhlmixer.DHLMixerRequestData
@@ -4079,6 +4091,9 @@ $root.dhlmixer = (function() {
                 writer.uint32(/* id 6, wireType 0 =*/48).bool(message.forceHandleManually);
             if (message.dhlRequestType != null && message.hasOwnProperty("dhlRequestType"))
                 writer.uint32(/* id 7, wireType 0 =*/56).int32(message.dhlRequestType);
+            if (message.dynamicEntities != null && message.dynamicEntities.length)
+                for (var i = 0; i < message.dynamicEntities.length; ++i)
+                    $root.dhl.DynamicEntity.encode(message.dynamicEntities[i], writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
             return writer;
         };
 
@@ -4133,6 +4148,11 @@ $root.dhlmixer = (function() {
                     break;
                 case 7:
                     message.dhlRequestType = reader.int32();
+                    break;
+                case 8:
+                    if (!(message.dynamicEntities && message.dynamicEntities.length))
+                        message.dynamicEntities = [];
+                    message.dynamicEntities.push($root.dhl.DynamicEntity.decode(reader, reader.uint32()));
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -4204,6 +4224,15 @@ $root.dhlmixer = (function() {
                 case 2:
                     break;
                 }
+            if (message.dynamicEntities != null && message.hasOwnProperty("dynamicEntities")) {
+                if (!Array.isArray(message.dynamicEntities))
+                    return "dynamicEntities: array expected";
+                for (var i = 0; i < message.dynamicEntities.length; ++i) {
+                    var error = $root.dhl.DynamicEntity.verify(message.dynamicEntities[i]);
+                    if (error)
+                        return "dynamicEntities." + error;
+                }
+            }
             return null;
         };
 
@@ -4265,6 +4294,16 @@ $root.dhlmixer = (function() {
                 message.dhlRequestType = 2;
                 break;
             }
+            if (object.dynamicEntities) {
+                if (!Array.isArray(object.dynamicEntities))
+                    throw TypeError(".dhlmixer.DHLMixerRequestData.dynamicEntities: array expected");
+                message.dynamicEntities = [];
+                for (var i = 0; i < object.dynamicEntities.length; ++i) {
+                    if (typeof object.dynamicEntities[i] !== "object")
+                        throw TypeError(".dhlmixer.DHLMixerRequestData.dynamicEntities: object expected");
+                    message.dynamicEntities[i] = $root.dhl.DynamicEntity.fromObject(object.dynamicEntities[i]);
+                }
+            }
             return message;
         };
 
@@ -4281,6 +4320,8 @@ $root.dhlmixer = (function() {
             if (!options)
                 options = {};
             var object = {};
+            if (options.arrays || options.defaults)
+                object.dynamicEntities = [];
             if (options.defaults) {
                 object.reqId = "";
                 object.message = "";
@@ -4304,6 +4345,11 @@ $root.dhlmixer = (function() {
                 object.forceHandleManually = message.forceHandleManually;
             if (message.dhlRequestType != null && message.hasOwnProperty("dhlRequestType"))
                 object.dhlRequestType = options.enums === String ? $root.dhl.DHLRequestType[message.dhlRequestType] : message.dhlRequestType;
+            if (message.dynamicEntities && message.dynamicEntities.length) {
+                object.dynamicEntities = [];
+                for (var j = 0; j < message.dynamicEntities.length; ++j)
+                    object.dynamicEntities[j] = $root.dhl.DynamicEntity.toObject(message.dynamicEntities[j], options);
+            }
             return object;
         };
 
@@ -4333,9 +4379,9 @@ $root.dhlmixer = (function() {
          * @property {dhlmixer.MessageContentType|null} [messageContentType] DHLMixerResponseData messageContentType
          * @property {dhlmixer.ResponseType|null} [responseType] DHLMixerResponseData responseType
          * @property {dhl.IDHLScript|null} [dhlScript] DHLMixerResponseData dhlScript
-         * @property {string|null} [customerServicePlatform] DHLMixerResponseData customerServicePlatform
-         * @property {string|null} [customerServiceAppId] DHLMixerResponseData customerServiceAppId
-         * @property {string|null} [customerServiceUid] DHLMixerResponseData customerServiceUid
+         * @property {string|null} [supportPlatform] DHLMixerResponseData supportPlatform
+         * @property {string|null} [supportApp] DHLMixerResponseData supportApp
+         * @property {string|null} [supportUid] DHLMixerResponseData supportUid
          */
 
         /**
@@ -4402,28 +4448,28 @@ $root.dhlmixer = (function() {
         DHLMixerResponseData.prototype.dhlScript = null;
 
         /**
-         * DHLMixerResponseData customerServicePlatform.
-         * @member {string} customerServicePlatform
+         * DHLMixerResponseData supportPlatform.
+         * @member {string} supportPlatform
          * @memberof dhlmixer.DHLMixerResponseData
          * @instance
          */
-        DHLMixerResponseData.prototype.customerServicePlatform = "";
+        DHLMixerResponseData.prototype.supportPlatform = "";
 
         /**
-         * DHLMixerResponseData customerServiceAppId.
-         * @member {string} customerServiceAppId
+         * DHLMixerResponseData supportApp.
+         * @member {string} supportApp
          * @memberof dhlmixer.DHLMixerResponseData
          * @instance
          */
-        DHLMixerResponseData.prototype.customerServiceAppId = "";
+        DHLMixerResponseData.prototype.supportApp = "";
 
         /**
-         * DHLMixerResponseData customerServiceUid.
-         * @member {string} customerServiceUid
+         * DHLMixerResponseData supportUid.
+         * @member {string} supportUid
          * @memberof dhlmixer.DHLMixerResponseData
          * @instance
          */
-        DHLMixerResponseData.prototype.customerServiceUid = "";
+        DHLMixerResponseData.prototype.supportUid = "";
 
         /**
          * Creates a new DHLMixerResponseData instance using the specified properties.
@@ -4461,12 +4507,12 @@ $root.dhlmixer = (function() {
                 writer.uint32(/* id 5, wireType 0 =*/40).int32(message.responseType);
             if (message.dhlScript != null && message.hasOwnProperty("dhlScript"))
                 $root.dhl.DHLScript.encode(message.dhlScript, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
-            if (message.customerServicePlatform != null && message.hasOwnProperty("customerServicePlatform"))
-                writer.uint32(/* id 7, wireType 2 =*/58).string(message.customerServicePlatform);
-            if (message.customerServiceAppId != null && message.hasOwnProperty("customerServiceAppId"))
-                writer.uint32(/* id 8, wireType 2 =*/66).string(message.customerServiceAppId);
-            if (message.customerServiceUid != null && message.hasOwnProperty("customerServiceUid"))
-                writer.uint32(/* id 9, wireType 2 =*/74).string(message.customerServiceUid);
+            if (message.supportPlatform != null && message.hasOwnProperty("supportPlatform"))
+                writer.uint32(/* id 7, wireType 2 =*/58).string(message.supportPlatform);
+            if (message.supportApp != null && message.hasOwnProperty("supportApp"))
+                writer.uint32(/* id 8, wireType 2 =*/66).string(message.supportApp);
+            if (message.supportUid != null && message.hasOwnProperty("supportUid"))
+                writer.uint32(/* id 9, wireType 2 =*/74).string(message.supportUid);
             return writer;
         };
 
@@ -4520,13 +4566,13 @@ $root.dhlmixer = (function() {
                     message.dhlScript = $root.dhl.DHLScript.decode(reader, reader.uint32());
                     break;
                 case 7:
-                    message.customerServicePlatform = reader.string();
+                    message.supportPlatform = reader.string();
                     break;
                 case 8:
-                    message.customerServiceAppId = reader.string();
+                    message.supportApp = reader.string();
                     break;
                 case 9:
-                    message.customerServiceUid = reader.string();
+                    message.supportUid = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -4597,15 +4643,15 @@ $root.dhlmixer = (function() {
                 if (error)
                     return "dhlScript." + error;
             }
-            if (message.customerServicePlatform != null && message.hasOwnProperty("customerServicePlatform"))
-                if (!$util.isString(message.customerServicePlatform))
-                    return "customerServicePlatform: string expected";
-            if (message.customerServiceAppId != null && message.hasOwnProperty("customerServiceAppId"))
-                if (!$util.isString(message.customerServiceAppId))
-                    return "customerServiceAppId: string expected";
-            if (message.customerServiceUid != null && message.hasOwnProperty("customerServiceUid"))
-                if (!$util.isString(message.customerServiceUid))
-                    return "customerServiceUid: string expected";
+            if (message.supportPlatform != null && message.hasOwnProperty("supportPlatform"))
+                if (!$util.isString(message.supportPlatform))
+                    return "supportPlatform: string expected";
+            if (message.supportApp != null && message.hasOwnProperty("supportApp"))
+                if (!$util.isString(message.supportApp))
+                    return "supportApp: string expected";
+            if (message.supportUid != null && message.hasOwnProperty("supportUid"))
+                if (!$util.isString(message.supportUid))
+                    return "supportUid: string expected";
             return null;
         };
 
@@ -4668,12 +4714,12 @@ $root.dhlmixer = (function() {
                     throw TypeError(".dhlmixer.DHLMixerResponseData.dhlScript: object expected");
                 message.dhlScript = $root.dhl.DHLScript.fromObject(object.dhlScript);
             }
-            if (object.customerServicePlatform != null)
-                message.customerServicePlatform = String(object.customerServicePlatform);
-            if (object.customerServiceAppId != null)
-                message.customerServiceAppId = String(object.customerServiceAppId);
-            if (object.customerServiceUid != null)
-                message.customerServiceUid = String(object.customerServiceUid);
+            if (object.supportPlatform != null)
+                message.supportPlatform = String(object.supportPlatform);
+            if (object.supportApp != null)
+                message.supportApp = String(object.supportApp);
+            if (object.supportUid != null)
+                message.supportUid = String(object.supportUid);
             return message;
         };
 
@@ -4697,9 +4743,9 @@ $root.dhlmixer = (function() {
                 object.messageContentType = options.enums === String ? "Text" : 0;
                 object.responseType = options.enums === String ? "Auto" : 0;
                 object.dhlScript = null;
-                object.customerServicePlatform = "";
-                object.customerServiceAppId = "";
-                object.customerServiceUid = "";
+                object.supportPlatform = "";
+                object.supportApp = "";
+                object.supportUid = "";
             }
             if (message.reqId != null && message.hasOwnProperty("reqId"))
                 object.reqId = message.reqId;
@@ -4713,12 +4759,12 @@ $root.dhlmixer = (function() {
                 object.responseType = options.enums === String ? $root.dhlmixer.ResponseType[message.responseType] : message.responseType;
             if (message.dhlScript != null && message.hasOwnProperty("dhlScript"))
                 object.dhlScript = $root.dhl.DHLScript.toObject(message.dhlScript, options);
-            if (message.customerServicePlatform != null && message.hasOwnProperty("customerServicePlatform"))
-                object.customerServicePlatform = message.customerServicePlatform;
-            if (message.customerServiceAppId != null && message.hasOwnProperty("customerServiceAppId"))
-                object.customerServiceAppId = message.customerServiceAppId;
-            if (message.customerServiceUid != null && message.hasOwnProperty("customerServiceUid"))
-                object.customerServiceUid = message.customerServiceUid;
+            if (message.supportPlatform != null && message.hasOwnProperty("supportPlatform"))
+                object.supportPlatform = message.supportPlatform;
+            if (message.supportApp != null && message.hasOwnProperty("supportApp"))
+                object.supportApp = message.supportApp;
+            if (message.supportUid != null && message.hasOwnProperty("supportUid"))
+                object.supportUid = message.supportUid;
             return object;
         };
 
@@ -5048,6 +5094,7 @@ $root.dhlmixer = (function() {
                 case 0:
                 case 1:
                 case 2:
+                case 4:
                     break;
                 }
             if (message.platformType != null && message.hasOwnProperty("platformType"))
@@ -5127,6 +5174,10 @@ $root.dhlmixer = (function() {
             case "Response":
             case 2:
                 message.messageType = 2;
+                break;
+            case "PhantomResponse":
+            case 4:
+                message.messageType = 4;
                 break;
             }
             if (object.platformType != null)
@@ -5690,7 +5741,7 @@ $root.dhlmixer = (function() {
          * @memberof dhlmixer
          * @interface IKerfuResponse
          * @property {dhlmixer.IKerfuMessageAck|null} [ack] KerfuResponse ack
-         * @property {dhlmixer.IKerfuMessage|null} [message] KerfuResponse message
+         * @property {Array.<dhlmixer.IKerfuMessage>|null} [messages] KerfuResponse messages
          */
 
         /**
@@ -5702,6 +5753,7 @@ $root.dhlmixer = (function() {
          * @param {dhlmixer.IKerfuResponse=} [properties] Properties to set
          */
         function KerfuResponse(properties) {
+            this.messages = [];
             if (properties)
                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -5717,12 +5769,12 @@ $root.dhlmixer = (function() {
         KerfuResponse.prototype.ack = null;
 
         /**
-         * KerfuResponse message.
-         * @member {dhlmixer.IKerfuMessage|null|undefined} message
+         * KerfuResponse messages.
+         * @member {Array.<dhlmixer.IKerfuMessage>} messages
          * @memberof dhlmixer.KerfuResponse
          * @instance
          */
-        KerfuResponse.prototype.message = null;
+        KerfuResponse.prototype.messages = $util.emptyArray;
 
         /**
          * Creates a new KerfuResponse instance using the specified properties.
@@ -5750,8 +5802,9 @@ $root.dhlmixer = (function() {
                 writer = $Writer.create();
             if (message.ack != null && message.hasOwnProperty("ack"))
                 $root.dhlmixer.KerfuMessageAck.encode(message.ack, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-            if (message.message != null && message.hasOwnProperty("message"))
-                $root.dhlmixer.KerfuMessage.encode(message.message, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+            if (message.messages != null && message.messages.length)
+                for (var i = 0; i < message.messages.length; ++i)
+                    $root.dhlmixer.KerfuMessage.encode(message.messages[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             return writer;
         };
 
@@ -5790,7 +5843,9 @@ $root.dhlmixer = (function() {
                     message.ack = $root.dhlmixer.KerfuMessageAck.decode(reader, reader.uint32());
                     break;
                 case 2:
-                    message.message = $root.dhlmixer.KerfuMessage.decode(reader, reader.uint32());
+                    if (!(message.messages && message.messages.length))
+                        message.messages = [];
+                    message.messages.push($root.dhlmixer.KerfuMessage.decode(reader, reader.uint32()));
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -5832,10 +5887,14 @@ $root.dhlmixer = (function() {
                 if (error)
                     return "ack." + error;
             }
-            if (message.message != null && message.hasOwnProperty("message")) {
-                var error = $root.dhlmixer.KerfuMessage.verify(message.message);
-                if (error)
-                    return "message." + error;
+            if (message.messages != null && message.hasOwnProperty("messages")) {
+                if (!Array.isArray(message.messages))
+                    return "messages: array expected";
+                for (var i = 0; i < message.messages.length; ++i) {
+                    var error = $root.dhlmixer.KerfuMessage.verify(message.messages[i]);
+                    if (error)
+                        return "messages." + error;
+                }
             }
             return null;
         };
@@ -5857,10 +5916,15 @@ $root.dhlmixer = (function() {
                     throw TypeError(".dhlmixer.KerfuResponse.ack: object expected");
                 message.ack = $root.dhlmixer.KerfuMessageAck.fromObject(object.ack);
             }
-            if (object.message != null) {
-                if (typeof object.message !== "object")
-                    throw TypeError(".dhlmixer.KerfuResponse.message: object expected");
-                message.message = $root.dhlmixer.KerfuMessage.fromObject(object.message);
+            if (object.messages) {
+                if (!Array.isArray(object.messages))
+                    throw TypeError(".dhlmixer.KerfuResponse.messages: array expected");
+                message.messages = [];
+                for (var i = 0; i < object.messages.length; ++i) {
+                    if (typeof object.messages[i] !== "object")
+                        throw TypeError(".dhlmixer.KerfuResponse.messages: object expected");
+                    message.messages[i] = $root.dhlmixer.KerfuMessage.fromObject(object.messages[i]);
+                }
             }
             return message;
         };
@@ -5878,14 +5942,17 @@ $root.dhlmixer = (function() {
             if (!options)
                 options = {};
             var object = {};
-            if (options.defaults) {
+            if (options.arrays || options.defaults)
+                object.messages = [];
+            if (options.defaults)
                 object.ack = null;
-                object.message = null;
-            }
             if (message.ack != null && message.hasOwnProperty("ack"))
                 object.ack = $root.dhlmixer.KerfuMessageAck.toObject(message.ack, options);
-            if (message.message != null && message.hasOwnProperty("message"))
-                object.message = $root.dhlmixer.KerfuMessage.toObject(message.message, options);
+            if (message.messages && message.messages.length) {
+                object.messages = [];
+                for (var j = 0; j < message.messages.length; ++j)
+                    object.messages[j] = $root.dhlmixer.KerfuMessage.toObject(message.messages[j], options);
+            }
             return object;
         };
 
@@ -6142,6 +6209,7 @@ $root.dhlmixer = (function() {
                 case 0:
                 case 1:
                 case 2:
+                case 4:
                     break;
                 }
             return null;
@@ -6204,6 +6272,10 @@ $root.dhlmixer = (function() {
             case "Response":
             case 2:
                 message.messageType = 2;
+                break;
+            case "PhantomResponse":
+            case 4:
+                message.messageType = 4;
                 break;
             }
             return message;
@@ -6496,10 +6568,12 @@ $root.dhlmixer = (function() {
      * @name dhlmixer.Action
      * @enum {string}
      * @property {number} Authentication=0 Authentication value
+     * @property {number} EndConversation=1 EndConversation value
      */
     dhlmixer.Action = (function() {
         var valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "Authentication"] = 0;
+        values[valuesById[1] = "EndConversation"] = 1;
         return values;
     })();
 
@@ -6526,7 +6600,7 @@ $root.dhlmixer = (function() {
          * @property {string|null} [platformType] KerfuAuthenticationData platformType
          * @property {string|null} [appId] KerfuAuthenticationData appId
          * @property {string|null} [userId] KerfuAuthenticationData userId
-         * @property {boolean|null} [isCustomerService] KerfuAuthenticationData isCustomerService
+         * @property {boolean|null} [isSupport] KerfuAuthenticationData isSupport
          */
 
         /**
@@ -6569,12 +6643,12 @@ $root.dhlmixer = (function() {
         KerfuAuthenticationData.prototype.userId = "";
 
         /**
-         * KerfuAuthenticationData isCustomerService.
-         * @member {boolean} isCustomerService
+         * KerfuAuthenticationData isSupport.
+         * @member {boolean} isSupport
          * @memberof dhlmixer.KerfuAuthenticationData
          * @instance
          */
-        KerfuAuthenticationData.prototype.isCustomerService = false;
+        KerfuAuthenticationData.prototype.isSupport = false;
 
         /**
          * Creates a new KerfuAuthenticationData instance using the specified properties.
@@ -6606,8 +6680,8 @@ $root.dhlmixer = (function() {
                 writer.uint32(/* id 2, wireType 2 =*/18).string(message.appId);
             if (message.userId != null && message.hasOwnProperty("userId"))
                 writer.uint32(/* id 3, wireType 2 =*/26).string(message.userId);
-            if (message.isCustomerService != null && message.hasOwnProperty("isCustomerService"))
-                writer.uint32(/* id 4, wireType 0 =*/32).bool(message.isCustomerService);
+            if (message.isSupport != null && message.hasOwnProperty("isSupport"))
+                writer.uint32(/* id 4, wireType 0 =*/32).bool(message.isSupport);
             return writer;
         };
 
@@ -6652,7 +6726,7 @@ $root.dhlmixer = (function() {
                     message.userId = reader.string();
                     break;
                 case 4:
-                    message.isCustomerService = reader.bool();
+                    message.isSupport = reader.bool();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -6698,9 +6772,9 @@ $root.dhlmixer = (function() {
             if (message.userId != null && message.hasOwnProperty("userId"))
                 if (!$util.isString(message.userId))
                     return "userId: string expected";
-            if (message.isCustomerService != null && message.hasOwnProperty("isCustomerService"))
-                if (typeof message.isCustomerService !== "boolean")
-                    return "isCustomerService: boolean expected";
+            if (message.isSupport != null && message.hasOwnProperty("isSupport"))
+                if (typeof message.isSupport !== "boolean")
+                    return "isSupport: boolean expected";
             return null;
         };
 
@@ -6722,8 +6796,8 @@ $root.dhlmixer = (function() {
                 message.appId = String(object.appId);
             if (object.userId != null)
                 message.userId = String(object.userId);
-            if (object.isCustomerService != null)
-                message.isCustomerService = Boolean(object.isCustomerService);
+            if (object.isSupport != null)
+                message.isSupport = Boolean(object.isSupport);
             return message;
         };
 
@@ -6744,7 +6818,7 @@ $root.dhlmixer = (function() {
                 object.platformType = "";
                 object.appId = "";
                 object.userId = "";
-                object.isCustomerService = false;
+                object.isSupport = false;
             }
             if (message.platformType != null && message.hasOwnProperty("platformType"))
                 object.platformType = message.platformType;
@@ -6752,8 +6826,8 @@ $root.dhlmixer = (function() {
                 object.appId = message.appId;
             if (message.userId != null && message.hasOwnProperty("userId"))
                 object.userId = message.userId;
-            if (message.isCustomerService != null && message.hasOwnProperty("isCustomerService"))
-                object.isCustomerService = message.isCustomerService;
+            if (message.isSupport != null && message.hasOwnProperty("isSupport"))
+                object.isSupport = message.isSupport;
             return object;
         };
 
@@ -6771,6 +6845,260 @@ $root.dhlmixer = (function() {
         return KerfuAuthenticationData;
     })();
 
+    dhlmixer.EndConversationData = (function() {
+
+        /**
+         * Properties of an EndConversationData.
+         * @memberof dhlmixer
+         * @interface IEndConversationData
+         * @property {string|null} [platformType] EndConversationData platformType
+         * @property {string|null} [appId] EndConversationData appId
+         * @property {string|null} [userId] EndConversationData userId
+         * @property {string|null} [agentId] EndConversationData agentId
+         */
+
+        /**
+         * Constructs a new EndConversationData.
+         * @memberof dhlmixer
+         * @classdesc Represents an EndConversationData.
+         * @implements IEndConversationData
+         * @constructor
+         * @param {dhlmixer.IEndConversationData=} [properties] Properties to set
+         */
+        function EndConversationData(properties) {
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * EndConversationData platformType.
+         * @member {string} platformType
+         * @memberof dhlmixer.EndConversationData
+         * @instance
+         */
+        EndConversationData.prototype.platformType = "";
+
+        /**
+         * EndConversationData appId.
+         * @member {string} appId
+         * @memberof dhlmixer.EndConversationData
+         * @instance
+         */
+        EndConversationData.prototype.appId = "";
+
+        /**
+         * EndConversationData userId.
+         * @member {string} userId
+         * @memberof dhlmixer.EndConversationData
+         * @instance
+         */
+        EndConversationData.prototype.userId = "";
+
+        /**
+         * EndConversationData agentId.
+         * @member {string} agentId
+         * @memberof dhlmixer.EndConversationData
+         * @instance
+         */
+        EndConversationData.prototype.agentId = "";
+
+        /**
+         * Creates a new EndConversationData instance using the specified properties.
+         * @function create
+         * @memberof dhlmixer.EndConversationData
+         * @static
+         * @param {dhlmixer.IEndConversationData=} [properties] Properties to set
+         * @returns {dhlmixer.EndConversationData} EndConversationData instance
+         */
+        EndConversationData.create = function create(properties) {
+            return new EndConversationData(properties);
+        };
+
+        /**
+         * Encodes the specified EndConversationData message. Does not implicitly {@link dhlmixer.EndConversationData.verify|verify} messages.
+         * @function encode
+         * @memberof dhlmixer.EndConversationData
+         * @static
+         * @param {dhlmixer.IEndConversationData} message EndConversationData message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        EndConversationData.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.platformType != null && message.hasOwnProperty("platformType"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.platformType);
+            if (message.appId != null && message.hasOwnProperty("appId"))
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.appId);
+            if (message.userId != null && message.hasOwnProperty("userId"))
+                writer.uint32(/* id 3, wireType 2 =*/26).string(message.userId);
+            if (message.agentId != null && message.hasOwnProperty("agentId"))
+                writer.uint32(/* id 4, wireType 2 =*/34).string(message.agentId);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified EndConversationData message, length delimited. Does not implicitly {@link dhlmixer.EndConversationData.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof dhlmixer.EndConversationData
+         * @static
+         * @param {dhlmixer.IEndConversationData} message EndConversationData message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        EndConversationData.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes an EndConversationData message from the specified reader or buffer.
+         * @function decode
+         * @memberof dhlmixer.EndConversationData
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {dhlmixer.EndConversationData} EndConversationData
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        EndConversationData.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.dhlmixer.EndConversationData();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.platformType = reader.string();
+                    break;
+                case 2:
+                    message.appId = reader.string();
+                    break;
+                case 3:
+                    message.userId = reader.string();
+                    break;
+                case 4:
+                    message.agentId = reader.string();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes an EndConversationData message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof dhlmixer.EndConversationData
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {dhlmixer.EndConversationData} EndConversationData
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        EndConversationData.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies an EndConversationData message.
+         * @function verify
+         * @memberof dhlmixer.EndConversationData
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        EndConversationData.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.platformType != null && message.hasOwnProperty("platformType"))
+                if (!$util.isString(message.platformType))
+                    return "platformType: string expected";
+            if (message.appId != null && message.hasOwnProperty("appId"))
+                if (!$util.isString(message.appId))
+                    return "appId: string expected";
+            if (message.userId != null && message.hasOwnProperty("userId"))
+                if (!$util.isString(message.userId))
+                    return "userId: string expected";
+            if (message.agentId != null && message.hasOwnProperty("agentId"))
+                if (!$util.isString(message.agentId))
+                    return "agentId: string expected";
+            return null;
+        };
+
+        /**
+         * Creates an EndConversationData message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof dhlmixer.EndConversationData
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {dhlmixer.EndConversationData} EndConversationData
+         */
+        EndConversationData.fromObject = function fromObject(object) {
+            if (object instanceof $root.dhlmixer.EndConversationData)
+                return object;
+            var message = new $root.dhlmixer.EndConversationData();
+            if (object.platformType != null)
+                message.platformType = String(object.platformType);
+            if (object.appId != null)
+                message.appId = String(object.appId);
+            if (object.userId != null)
+                message.userId = String(object.userId);
+            if (object.agentId != null)
+                message.agentId = String(object.agentId);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from an EndConversationData message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof dhlmixer.EndConversationData
+         * @static
+         * @param {dhlmixer.EndConversationData} message EndConversationData
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        EndConversationData.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            var object = {};
+            if (options.defaults) {
+                object.platformType = "";
+                object.appId = "";
+                object.userId = "";
+                object.agentId = "";
+            }
+            if (message.platformType != null && message.hasOwnProperty("platformType"))
+                object.platformType = message.platformType;
+            if (message.appId != null && message.hasOwnProperty("appId"))
+                object.appId = message.appId;
+            if (message.userId != null && message.hasOwnProperty("userId"))
+                object.userId = message.userId;
+            if (message.agentId != null && message.hasOwnProperty("agentId"))
+                object.agentId = message.agentId;
+            return object;
+        };
+
+        /**
+         * Converts this EndConversationData to JSON.
+         * @function toJSON
+         * @memberof dhlmixer.EndConversationData
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        EndConversationData.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        return EndConversationData;
+    })();
+
     dhlmixer.KerfuAction = (function() {
 
         /**
@@ -6780,6 +7108,7 @@ $root.dhlmixer = (function() {
          * @property {string|null} [seq] KerfuAction seq
          * @property {dhlmixer.Action|null} [action] KerfuAction action
          * @property {dhlmixer.IKerfuAuthenticationData|null} [authenticationData] KerfuAction authenticationData
+         * @property {dhlmixer.IEndConversationData|null} [endConversationData] KerfuAction endConversationData
          */
 
         /**
@@ -6821,17 +7150,25 @@ $root.dhlmixer = (function() {
          */
         KerfuAction.prototype.authenticationData = null;
 
+        /**
+         * KerfuAction endConversationData.
+         * @member {dhlmixer.IEndConversationData|null|undefined} endConversationData
+         * @memberof dhlmixer.KerfuAction
+         * @instance
+         */
+        KerfuAction.prototype.endConversationData = null;
+
         // OneOf field names bound to virtual getters and setters
         var $oneOfFields;
 
         /**
          * KerfuAction data.
-         * @member {"authenticationData"|undefined} data
+         * @member {"authenticationData"|"endConversationData"|undefined} data
          * @memberof dhlmixer.KerfuAction
          * @instance
          */
         Object.defineProperty(KerfuAction.prototype, "data", {
-            get: $util.oneOfGetter($oneOfFields = ["authenticationData"]),
+            get: $util.oneOfGetter($oneOfFields = ["authenticationData", "endConversationData"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -6865,6 +7202,8 @@ $root.dhlmixer = (function() {
                 writer.uint32(/* id 2, wireType 0 =*/16).int32(message.action);
             if (message.authenticationData != null && message.hasOwnProperty("authenticationData"))
                 $root.dhlmixer.KerfuAuthenticationData.encode(message.authenticationData, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+            if (message.endConversationData != null && message.hasOwnProperty("endConversationData"))
+                $root.dhlmixer.EndConversationData.encode(message.endConversationData, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
             return writer;
         };
 
@@ -6907,6 +7246,9 @@ $root.dhlmixer = (function() {
                     break;
                 case 3:
                     message.authenticationData = $root.dhlmixer.KerfuAuthenticationData.decode(reader, reader.uint32());
+                    break;
+                case 4:
+                    message.endConversationData = $root.dhlmixer.EndConversationData.decode(reader, reader.uint32());
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -6952,6 +7294,7 @@ $root.dhlmixer = (function() {
                 default:
                     return "action: enum value expected";
                 case 0:
+                case 1:
                     break;
                 }
             if (message.authenticationData != null && message.hasOwnProperty("authenticationData")) {
@@ -6960,6 +7303,16 @@ $root.dhlmixer = (function() {
                     var error = $root.dhlmixer.KerfuAuthenticationData.verify(message.authenticationData);
                     if (error)
                         return "authenticationData." + error;
+                }
+            }
+            if (message.endConversationData != null && message.hasOwnProperty("endConversationData")) {
+                if (properties.data === 1)
+                    return "data: multiple values";
+                properties.data = 1;
+                {
+                    var error = $root.dhlmixer.EndConversationData.verify(message.endConversationData);
+                    if (error)
+                        return "endConversationData." + error;
                 }
             }
             return null;
@@ -6984,11 +7337,20 @@ $root.dhlmixer = (function() {
             case 0:
                 message.action = 0;
                 break;
+            case "EndConversation":
+            case 1:
+                message.action = 1;
+                break;
             }
             if (object.authenticationData != null) {
                 if (typeof object.authenticationData !== "object")
                     throw TypeError(".dhlmixer.KerfuAction.authenticationData: object expected");
                 message.authenticationData = $root.dhlmixer.KerfuAuthenticationData.fromObject(object.authenticationData);
+            }
+            if (object.endConversationData != null) {
+                if (typeof object.endConversationData !== "object")
+                    throw TypeError(".dhlmixer.KerfuAction.endConversationData: object expected");
+                message.endConversationData = $root.dhlmixer.EndConversationData.fromObject(object.endConversationData);
             }
             return message;
         };
@@ -7018,6 +7380,11 @@ $root.dhlmixer = (function() {
                 object.authenticationData = $root.dhlmixer.KerfuAuthenticationData.toObject(message.authenticationData, options);
                 if (options.oneofs)
                     object.data = "authenticationData";
+            }
+            if (message.endConversationData != null && message.hasOwnProperty("endConversationData")) {
+                object.endConversationData = $root.dhlmixer.EndConversationData.toObject(message.endConversationData, options);
+                if (options.oneofs)
+                    object.data = "endConversationData";
             }
             return object;
         };
@@ -7417,6 +7784,7 @@ $root.dhlmixer = (function() {
                 case 0:
                 case 1:
                 case 2:
+                case 4:
                     break;
                 }
             return null;
@@ -7457,6 +7825,10 @@ $root.dhlmixer = (function() {
             case "Response":
             case 2:
                 message.messageType = 2;
+                break;
+            case "PhantomResponse":
+            case 4:
+                message.messageType = 4;
                 break;
             }
             return message;
@@ -8238,529 +8610,6 @@ $root.dhl = (function() {
         return values;
     })();
 
-    dhl.TextResponse = (function() {
-
-        /**
-         * Properties of a TextResponse.
-         * @memberof dhl
-         * @interface ITextResponse
-         * @property {Array.<string>|null} [contents] TextResponse contents
-         */
-
-        /**
-         * Constructs a new TextResponse.
-         * @memberof dhl
-         * @classdesc Represents a TextResponse.
-         * @implements ITextResponse
-         * @constructor
-         * @param {dhl.ITextResponse=} [properties] Properties to set
-         */
-        function TextResponse(properties) {
-            this.contents = [];
-            if (properties)
-                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null)
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * TextResponse contents.
-         * @member {Array.<string>} contents
-         * @memberof dhl.TextResponse
-         * @instance
-         */
-        TextResponse.prototype.contents = $util.emptyArray;
-
-        /**
-         * Creates a new TextResponse instance using the specified properties.
-         * @function create
-         * @memberof dhl.TextResponse
-         * @static
-         * @param {dhl.ITextResponse=} [properties] Properties to set
-         * @returns {dhl.TextResponse} TextResponse instance
-         */
-        TextResponse.create = function create(properties) {
-            return new TextResponse(properties);
-        };
-
-        /**
-         * Encodes the specified TextResponse message. Does not implicitly {@link dhl.TextResponse.verify|verify} messages.
-         * @function encode
-         * @memberof dhl.TextResponse
-         * @static
-         * @param {dhl.ITextResponse} message TextResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        TextResponse.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.contents != null && message.contents.length)
-                for (var i = 0; i < message.contents.length; ++i)
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.contents[i]);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified TextResponse message, length delimited. Does not implicitly {@link dhl.TextResponse.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof dhl.TextResponse
-         * @static
-         * @param {dhl.ITextResponse} message TextResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        TextResponse.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a TextResponse message from the specified reader or buffer.
-         * @function decode
-         * @memberof dhl.TextResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {dhl.TextResponse} TextResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        TextResponse.decode = function decode(reader, length) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.dhl.TextResponse();
-            while (reader.pos < end) {
-                var tag = reader.uint32();
-                switch (tag >>> 3) {
-                case 1:
-                    if (!(message.contents && message.contents.length))
-                        message.contents = [];
-                    message.contents.push(reader.string());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a TextResponse message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof dhl.TextResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {dhl.TextResponse} TextResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        TextResponse.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a TextResponse message.
-         * @function verify
-         * @memberof dhl.TextResponse
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        TextResponse.verify = function verify(message) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (message.contents != null && message.hasOwnProperty("contents")) {
-                if (!Array.isArray(message.contents))
-                    return "contents: array expected";
-                for (var i = 0; i < message.contents.length; ++i)
-                    if (!$util.isString(message.contents[i]))
-                        return "contents: string[] expected";
-            }
-            return null;
-        };
-
-        /**
-         * Creates a TextResponse message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof dhl.TextResponse
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {dhl.TextResponse} TextResponse
-         */
-        TextResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.dhl.TextResponse)
-                return object;
-            var message = new $root.dhl.TextResponse();
-            if (object.contents) {
-                if (!Array.isArray(object.contents))
-                    throw TypeError(".dhl.TextResponse.contents: array expected");
-                message.contents = [];
-                for (var i = 0; i < object.contents.length; ++i)
-                    message.contents[i] = String(object.contents[i]);
-            }
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a TextResponse message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof dhl.TextResponse
-         * @static
-         * @param {dhl.TextResponse} message TextResponse
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        TextResponse.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            var object = {};
-            if (options.arrays || options.defaults)
-                object.contents = [];
-            if (message.contents && message.contents.length) {
-                object.contents = [];
-                for (var j = 0; j < message.contents.length; ++j)
-                    object.contents[j] = message.contents[j];
-            }
-            return object;
-        };
-
-        /**
-         * Converts this TextResponse to JSON.
-         * @function toJSON
-         * @memberof dhl.TextResponse
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        TextResponse.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        return TextResponse;
-    })();
-
-    dhl.CardResponse = (function() {
-
-        /**
-         * Properties of a CardResponse.
-         * @memberof dhl
-         * @interface ICardResponse
-         * @property {string|null} [title] CardResponse title
-         * @property {string|null} [description] CardResponse description
-         * @property {string|null} [imageUrl] CardResponse imageUrl
-         * @property {string|null} [deepLink] CardResponse deepLink
-         * @property {string|null} [script] CardResponse script
-         * @property {string|null} [preCardText] CardResponse preCardText
-         * @property {string|null} [postCardText] CardResponse postCardText
-         */
-
-        /**
-         * Constructs a new CardResponse.
-         * @memberof dhl
-         * @classdesc Represents a CardResponse.
-         * @implements ICardResponse
-         * @constructor
-         * @param {dhl.ICardResponse=} [properties] Properties to set
-         */
-        function CardResponse(properties) {
-            if (properties)
-                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null)
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * CardResponse title.
-         * @member {string} title
-         * @memberof dhl.CardResponse
-         * @instance
-         */
-        CardResponse.prototype.title = "";
-
-        /**
-         * CardResponse description.
-         * @member {string} description
-         * @memberof dhl.CardResponse
-         * @instance
-         */
-        CardResponse.prototype.description = "";
-
-        /**
-         * CardResponse imageUrl.
-         * @member {string} imageUrl
-         * @memberof dhl.CardResponse
-         * @instance
-         */
-        CardResponse.prototype.imageUrl = "";
-
-        /**
-         * CardResponse deepLink.
-         * @member {string} deepLink
-         * @memberof dhl.CardResponse
-         * @instance
-         */
-        CardResponse.prototype.deepLink = "";
-
-        /**
-         * CardResponse script.
-         * @member {string} script
-         * @memberof dhl.CardResponse
-         * @instance
-         */
-        CardResponse.prototype.script = "";
-
-        /**
-         * CardResponse preCardText.
-         * @member {string} preCardText
-         * @memberof dhl.CardResponse
-         * @instance
-         */
-        CardResponse.prototype.preCardText = "";
-
-        /**
-         * CardResponse postCardText.
-         * @member {string} postCardText
-         * @memberof dhl.CardResponse
-         * @instance
-         */
-        CardResponse.prototype.postCardText = "";
-
-        /**
-         * Creates a new CardResponse instance using the specified properties.
-         * @function create
-         * @memberof dhl.CardResponse
-         * @static
-         * @param {dhl.ICardResponse=} [properties] Properties to set
-         * @returns {dhl.CardResponse} CardResponse instance
-         */
-        CardResponse.create = function create(properties) {
-            return new CardResponse(properties);
-        };
-
-        /**
-         * Encodes the specified CardResponse message. Does not implicitly {@link dhl.CardResponse.verify|verify} messages.
-         * @function encode
-         * @memberof dhl.CardResponse
-         * @static
-         * @param {dhl.ICardResponse} message CardResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        CardResponse.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.title != null && message.hasOwnProperty("title"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.title);
-            if (message.description != null && message.hasOwnProperty("description"))
-                writer.uint32(/* id 2, wireType 2 =*/18).string(message.description);
-            if (message.imageUrl != null && message.hasOwnProperty("imageUrl"))
-                writer.uint32(/* id 3, wireType 2 =*/26).string(message.imageUrl);
-            if (message.deepLink != null && message.hasOwnProperty("deepLink"))
-                writer.uint32(/* id 4, wireType 2 =*/34).string(message.deepLink);
-            if (message.script != null && message.hasOwnProperty("script"))
-                writer.uint32(/* id 5, wireType 2 =*/42).string(message.script);
-            if (message.preCardText != null && message.hasOwnProperty("preCardText"))
-                writer.uint32(/* id 6, wireType 2 =*/50).string(message.preCardText);
-            if (message.postCardText != null && message.hasOwnProperty("postCardText"))
-                writer.uint32(/* id 7, wireType 2 =*/58).string(message.postCardText);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified CardResponse message, length delimited. Does not implicitly {@link dhl.CardResponse.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof dhl.CardResponse
-         * @static
-         * @param {dhl.ICardResponse} message CardResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        CardResponse.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a CardResponse message from the specified reader or buffer.
-         * @function decode
-         * @memberof dhl.CardResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {dhl.CardResponse} CardResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        CardResponse.decode = function decode(reader, length) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.dhl.CardResponse();
-            while (reader.pos < end) {
-                var tag = reader.uint32();
-                switch (tag >>> 3) {
-                case 1:
-                    message.title = reader.string();
-                    break;
-                case 2:
-                    message.description = reader.string();
-                    break;
-                case 3:
-                    message.imageUrl = reader.string();
-                    break;
-                case 4:
-                    message.deepLink = reader.string();
-                    break;
-                case 5:
-                    message.script = reader.string();
-                    break;
-                case 6:
-                    message.preCardText = reader.string();
-                    break;
-                case 7:
-                    message.postCardText = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a CardResponse message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof dhl.CardResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {dhl.CardResponse} CardResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        CardResponse.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a CardResponse message.
-         * @function verify
-         * @memberof dhl.CardResponse
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        CardResponse.verify = function verify(message) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (message.title != null && message.hasOwnProperty("title"))
-                if (!$util.isString(message.title))
-                    return "title: string expected";
-            if (message.description != null && message.hasOwnProperty("description"))
-                if (!$util.isString(message.description))
-                    return "description: string expected";
-            if (message.imageUrl != null && message.hasOwnProperty("imageUrl"))
-                if (!$util.isString(message.imageUrl))
-                    return "imageUrl: string expected";
-            if (message.deepLink != null && message.hasOwnProperty("deepLink"))
-                if (!$util.isString(message.deepLink))
-                    return "deepLink: string expected";
-            if (message.script != null && message.hasOwnProperty("script"))
-                if (!$util.isString(message.script))
-                    return "script: string expected";
-            if (message.preCardText != null && message.hasOwnProperty("preCardText"))
-                if (!$util.isString(message.preCardText))
-                    return "preCardText: string expected";
-            if (message.postCardText != null && message.hasOwnProperty("postCardText"))
-                if (!$util.isString(message.postCardText))
-                    return "postCardText: string expected";
-            return null;
-        };
-
-        /**
-         * Creates a CardResponse message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof dhl.CardResponse
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {dhl.CardResponse} CardResponse
-         */
-        CardResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.dhl.CardResponse)
-                return object;
-            var message = new $root.dhl.CardResponse();
-            if (object.title != null)
-                message.title = String(object.title);
-            if (object.description != null)
-                message.description = String(object.description);
-            if (object.imageUrl != null)
-                message.imageUrl = String(object.imageUrl);
-            if (object.deepLink != null)
-                message.deepLink = String(object.deepLink);
-            if (object.script != null)
-                message.script = String(object.script);
-            if (object.preCardText != null)
-                message.preCardText = String(object.preCardText);
-            if (object.postCardText != null)
-                message.postCardText = String(object.postCardText);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a CardResponse message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof dhl.CardResponse
-         * @static
-         * @param {dhl.CardResponse} message CardResponse
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        CardResponse.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            var object = {};
-            if (options.defaults) {
-                object.title = "";
-                object.description = "";
-                object.imageUrl = "";
-                object.deepLink = "";
-                object.script = "";
-                object.preCardText = "";
-                object.postCardText = "";
-            }
-            if (message.title != null && message.hasOwnProperty("title"))
-                object.title = message.title;
-            if (message.description != null && message.hasOwnProperty("description"))
-                object.description = message.description;
-            if (message.imageUrl != null && message.hasOwnProperty("imageUrl"))
-                object.imageUrl = message.imageUrl;
-            if (message.deepLink != null && message.hasOwnProperty("deepLink"))
-                object.deepLink = message.deepLink;
-            if (message.script != null && message.hasOwnProperty("script"))
-                object.script = message.script;
-            if (message.preCardText != null && message.hasOwnProperty("preCardText"))
-                object.preCardText = message.preCardText;
-            if (message.postCardText != null && message.hasOwnProperty("postCardText"))
-                object.postCardText = message.postCardText;
-            return object;
-        };
-
-        /**
-         * Converts this CardResponse to JSON.
-         * @function toJSON
-         * @memberof dhl.CardResponse
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        CardResponse.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        return CardResponse;
-    })();
-
     dhl.DHLAgentInfo = (function() {
 
         /**
@@ -9540,6 +9389,520 @@ $root.dhl = (function() {
         return Script;
     })();
 
+    dhl.ChatMessage = (function() {
+
+        /**
+         * Properties of a ChatMessage.
+         * @memberof dhl
+         * @interface IChatMessage
+         * @property {string|null} [textMsg] ChatMessage textMsg
+         * @property {dhl.ICardResponse|null} [cardMsg] ChatMessage cardMsg
+         * @property {string|null} [imageResponseUrl] ChatMessage imageResponseUrl
+         */
+
+        /**
+         * Constructs a new ChatMessage.
+         * @memberof dhl
+         * @classdesc Represents a ChatMessage.
+         * @implements IChatMessage
+         * @constructor
+         * @param {dhl.IChatMessage=} [properties] Properties to set
+         */
+        function ChatMessage(properties) {
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * ChatMessage textMsg.
+         * @member {string} textMsg
+         * @memberof dhl.ChatMessage
+         * @instance
+         */
+        ChatMessage.prototype.textMsg = "";
+
+        /**
+         * ChatMessage cardMsg.
+         * @member {dhl.ICardResponse|null|undefined} cardMsg
+         * @memberof dhl.ChatMessage
+         * @instance
+         */
+        ChatMessage.prototype.cardMsg = null;
+
+        /**
+         * ChatMessage imageResponseUrl.
+         * @member {string} imageResponseUrl
+         * @memberof dhl.ChatMessage
+         * @instance
+         */
+        ChatMessage.prototype.imageResponseUrl = "";
+
+        // OneOf field names bound to virtual getters and setters
+        var $oneOfFields;
+
+        /**
+         * ChatMessage chatMessage.
+         * @member {"textMsg"|"cardMsg"|"imageResponseUrl"|undefined} chatMessage
+         * @memberof dhl.ChatMessage
+         * @instance
+         */
+        Object.defineProperty(ChatMessage.prototype, "chatMessage", {
+            get: $util.oneOfGetter($oneOfFields = ["textMsg", "cardMsg", "imageResponseUrl"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
+         * Creates a new ChatMessage instance using the specified properties.
+         * @function create
+         * @memberof dhl.ChatMessage
+         * @static
+         * @param {dhl.IChatMessage=} [properties] Properties to set
+         * @returns {dhl.ChatMessage} ChatMessage instance
+         */
+        ChatMessage.create = function create(properties) {
+            return new ChatMessage(properties);
+        };
+
+        /**
+         * Encodes the specified ChatMessage message. Does not implicitly {@link dhl.ChatMessage.verify|verify} messages.
+         * @function encode
+         * @memberof dhl.ChatMessage
+         * @static
+         * @param {dhl.IChatMessage} message ChatMessage message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ChatMessage.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.textMsg != null && message.hasOwnProperty("textMsg"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.textMsg);
+            if (message.cardMsg != null && message.hasOwnProperty("cardMsg"))
+                $root.dhl.CardResponse.encode(message.cardMsg, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+            if (message.imageResponseUrl != null && message.hasOwnProperty("imageResponseUrl"))
+                writer.uint32(/* id 3, wireType 2 =*/26).string(message.imageResponseUrl);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified ChatMessage message, length delimited. Does not implicitly {@link dhl.ChatMessage.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof dhl.ChatMessage
+         * @static
+         * @param {dhl.IChatMessage} message ChatMessage message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ChatMessage.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a ChatMessage message from the specified reader or buffer.
+         * @function decode
+         * @memberof dhl.ChatMessage
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {dhl.ChatMessage} ChatMessage
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ChatMessage.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.dhl.ChatMessage();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.textMsg = reader.string();
+                    break;
+                case 2:
+                    message.cardMsg = $root.dhl.CardResponse.decode(reader, reader.uint32());
+                    break;
+                case 3:
+                    message.imageResponseUrl = reader.string();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a ChatMessage message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof dhl.ChatMessage
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {dhl.ChatMessage} ChatMessage
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ChatMessage.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a ChatMessage message.
+         * @function verify
+         * @memberof dhl.ChatMessage
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        ChatMessage.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            var properties = {};
+            if (message.textMsg != null && message.hasOwnProperty("textMsg")) {
+                properties.chatMessage = 1;
+                if (!$util.isString(message.textMsg))
+                    return "textMsg: string expected";
+            }
+            if (message.cardMsg != null && message.hasOwnProperty("cardMsg")) {
+                if (properties.chatMessage === 1)
+                    return "chatMessage: multiple values";
+                properties.chatMessage = 1;
+                {
+                    var error = $root.dhl.CardResponse.verify(message.cardMsg);
+                    if (error)
+                        return "cardMsg." + error;
+                }
+            }
+            if (message.imageResponseUrl != null && message.hasOwnProperty("imageResponseUrl")) {
+                if (properties.chatMessage === 1)
+                    return "chatMessage: multiple values";
+                properties.chatMessage = 1;
+                if (!$util.isString(message.imageResponseUrl))
+                    return "imageResponseUrl: string expected";
+            }
+            return null;
+        };
+
+        /**
+         * Creates a ChatMessage message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof dhl.ChatMessage
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {dhl.ChatMessage} ChatMessage
+         */
+        ChatMessage.fromObject = function fromObject(object) {
+            if (object instanceof $root.dhl.ChatMessage)
+                return object;
+            var message = new $root.dhl.ChatMessage();
+            if (object.textMsg != null)
+                message.textMsg = String(object.textMsg);
+            if (object.cardMsg != null) {
+                if (typeof object.cardMsg !== "object")
+                    throw TypeError(".dhl.ChatMessage.cardMsg: object expected");
+                message.cardMsg = $root.dhl.CardResponse.fromObject(object.cardMsg);
+            }
+            if (object.imageResponseUrl != null)
+                message.imageResponseUrl = String(object.imageResponseUrl);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a ChatMessage message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof dhl.ChatMessage
+         * @static
+         * @param {dhl.ChatMessage} message ChatMessage
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        ChatMessage.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            var object = {};
+            if (message.textMsg != null && message.hasOwnProperty("textMsg")) {
+                object.textMsg = message.textMsg;
+                if (options.oneofs)
+                    object.chatMessage = "textMsg";
+            }
+            if (message.cardMsg != null && message.hasOwnProperty("cardMsg")) {
+                object.cardMsg = $root.dhl.CardResponse.toObject(message.cardMsg, options);
+                if (options.oneofs)
+                    object.chatMessage = "cardMsg";
+            }
+            if (message.imageResponseUrl != null && message.hasOwnProperty("imageResponseUrl")) {
+                object.imageResponseUrl = message.imageResponseUrl;
+                if (options.oneofs)
+                    object.chatMessage = "imageResponseUrl";
+            }
+            return object;
+        };
+
+        /**
+         * Converts this ChatMessage to JSON.
+         * @function toJSON
+         * @memberof dhl.ChatMessage
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        ChatMessage.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        return ChatMessage;
+    })();
+
+    dhl.DHLChatResponse = (function() {
+
+        /**
+         * Properties of a DHLChatResponse.
+         * @memberof dhl
+         * @interface IDHLChatResponse
+         * @property {Array.<dhl.IChatMessage>|null} [msgs] DHLChatResponse msgs
+         * @property {Array.<string>|null} [candidates] DHLChatResponse candidates
+         */
+
+        /**
+         * Constructs a new DHLChatResponse.
+         * @memberof dhl
+         * @classdesc Represents a DHLChatResponse.
+         * @implements IDHLChatResponse
+         * @constructor
+         * @param {dhl.IDHLChatResponse=} [properties] Properties to set
+         */
+        function DHLChatResponse(properties) {
+            this.msgs = [];
+            this.candidates = [];
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * DHLChatResponse msgs.
+         * @member {Array.<dhl.IChatMessage>} msgs
+         * @memberof dhl.DHLChatResponse
+         * @instance
+         */
+        DHLChatResponse.prototype.msgs = $util.emptyArray;
+
+        /**
+         * DHLChatResponse candidates.
+         * @member {Array.<string>} candidates
+         * @memberof dhl.DHLChatResponse
+         * @instance
+         */
+        DHLChatResponse.prototype.candidates = $util.emptyArray;
+
+        /**
+         * Creates a new DHLChatResponse instance using the specified properties.
+         * @function create
+         * @memberof dhl.DHLChatResponse
+         * @static
+         * @param {dhl.IDHLChatResponse=} [properties] Properties to set
+         * @returns {dhl.DHLChatResponse} DHLChatResponse instance
+         */
+        DHLChatResponse.create = function create(properties) {
+            return new DHLChatResponse(properties);
+        };
+
+        /**
+         * Encodes the specified DHLChatResponse message. Does not implicitly {@link dhl.DHLChatResponse.verify|verify} messages.
+         * @function encode
+         * @memberof dhl.DHLChatResponse
+         * @static
+         * @param {dhl.IDHLChatResponse} message DHLChatResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        DHLChatResponse.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.msgs != null && message.msgs.length)
+                for (var i = 0; i < message.msgs.length; ++i)
+                    $root.dhl.ChatMessage.encode(message.msgs[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.candidates != null && message.candidates.length)
+                for (var i = 0; i < message.candidates.length; ++i)
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.candidates[i]);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified DHLChatResponse message, length delimited. Does not implicitly {@link dhl.DHLChatResponse.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof dhl.DHLChatResponse
+         * @static
+         * @param {dhl.IDHLChatResponse} message DHLChatResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        DHLChatResponse.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a DHLChatResponse message from the specified reader or buffer.
+         * @function decode
+         * @memberof dhl.DHLChatResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {dhl.DHLChatResponse} DHLChatResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        DHLChatResponse.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.dhl.DHLChatResponse();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    if (!(message.msgs && message.msgs.length))
+                        message.msgs = [];
+                    message.msgs.push($root.dhl.ChatMessage.decode(reader, reader.uint32()));
+                    break;
+                case 2:
+                    if (!(message.candidates && message.candidates.length))
+                        message.candidates = [];
+                    message.candidates.push(reader.string());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a DHLChatResponse message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof dhl.DHLChatResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {dhl.DHLChatResponse} DHLChatResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        DHLChatResponse.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a DHLChatResponse message.
+         * @function verify
+         * @memberof dhl.DHLChatResponse
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        DHLChatResponse.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.msgs != null && message.hasOwnProperty("msgs")) {
+                if (!Array.isArray(message.msgs))
+                    return "msgs: array expected";
+                for (var i = 0; i < message.msgs.length; ++i) {
+                    var error = $root.dhl.ChatMessage.verify(message.msgs[i]);
+                    if (error)
+                        return "msgs." + error;
+                }
+            }
+            if (message.candidates != null && message.hasOwnProperty("candidates")) {
+                if (!Array.isArray(message.candidates))
+                    return "candidates: array expected";
+                for (var i = 0; i < message.candidates.length; ++i)
+                    if (!$util.isString(message.candidates[i]))
+                        return "candidates: string[] expected";
+            }
+            return null;
+        };
+
+        /**
+         * Creates a DHLChatResponse message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof dhl.DHLChatResponse
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {dhl.DHLChatResponse} DHLChatResponse
+         */
+        DHLChatResponse.fromObject = function fromObject(object) {
+            if (object instanceof $root.dhl.DHLChatResponse)
+                return object;
+            var message = new $root.dhl.DHLChatResponse();
+            if (object.msgs) {
+                if (!Array.isArray(object.msgs))
+                    throw TypeError(".dhl.DHLChatResponse.msgs: array expected");
+                message.msgs = [];
+                for (var i = 0; i < object.msgs.length; ++i) {
+                    if (typeof object.msgs[i] !== "object")
+                        throw TypeError(".dhl.DHLChatResponse.msgs: object expected");
+                    message.msgs[i] = $root.dhl.ChatMessage.fromObject(object.msgs[i]);
+                }
+            }
+            if (object.candidates) {
+                if (!Array.isArray(object.candidates))
+                    throw TypeError(".dhl.DHLChatResponse.candidates: array expected");
+                message.candidates = [];
+                for (var i = 0; i < object.candidates.length; ++i)
+                    message.candidates[i] = String(object.candidates[i]);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a DHLChatResponse message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof dhl.DHLChatResponse
+         * @static
+         * @param {dhl.DHLChatResponse} message DHLChatResponse
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        DHLChatResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            var object = {};
+            if (options.arrays || options.defaults) {
+                object.msgs = [];
+                object.candidates = [];
+            }
+            if (message.msgs && message.msgs.length) {
+                object.msgs = [];
+                for (var j = 0; j < message.msgs.length; ++j)
+                    object.msgs[j] = $root.dhl.ChatMessage.toObject(message.msgs[j], options);
+            }
+            if (message.candidates && message.candidates.length) {
+                object.candidates = [];
+                for (var j = 0; j < message.candidates.length; ++j)
+                    object.candidates[j] = message.candidates[j];
+            }
+            return object;
+        };
+
+        /**
+         * Converts this DHLChatResponse to JSON.
+         * @function toJSON
+         * @memberof dhl.DHLChatResponse
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        DHLChatResponse.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        return DHLChatResponse;
+    })();
+
     dhl.DHLScript = (function() {
 
         /**
@@ -9550,6 +9913,8 @@ $root.dhl = (function() {
          * @property {Array.<string>|null} [candidates] DHLScript candidates
          * @property {string|null} [modifiedQuery] DHLScript modifiedQuery
          * @property {string|null} [message] DHLScript message
+         * @property {dhl.IDHLAgentResponse|null} [agentResponse] DHLScript agentResponse
+         * @property {dhl.IDHLChatResponse|null} [chatResponse] DHLScript chatResponse
          */
 
         /**
@@ -9601,6 +9966,36 @@ $root.dhl = (function() {
         DHLScript.prototype.message = "";
 
         /**
+         * DHLScript agentResponse.
+         * @member {dhl.IDHLAgentResponse|null|undefined} agentResponse
+         * @memberof dhl.DHLScript
+         * @instance
+         */
+        DHLScript.prototype.agentResponse = null;
+
+        /**
+         * DHLScript chatResponse.
+         * @member {dhl.IDHLChatResponse|null|undefined} chatResponse
+         * @memberof dhl.DHLScript
+         * @instance
+         */
+        DHLScript.prototype.chatResponse = null;
+
+        // OneOf field names bound to virtual getters and setters
+        var $oneOfFields;
+
+        /**
+         * DHLScript dhlResponse.
+         * @member {"agentResponse"|"chatResponse"|undefined} dhlResponse
+         * @memberof dhl.DHLScript
+         * @instance
+         */
+        Object.defineProperty(DHLScript.prototype, "dhlResponse", {
+            get: $util.oneOfGetter($oneOfFields = ["agentResponse", "chatResponse"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
          * Creates a new DHLScript instance using the specified properties.
          * @function create
          * @memberof dhl.DHLScript
@@ -9633,6 +10028,10 @@ $root.dhl = (function() {
                 writer.uint32(/* id 3, wireType 2 =*/26).string(message.modifiedQuery);
             if (message.message != null && message.hasOwnProperty("message"))
                 writer.uint32(/* id 4, wireType 2 =*/34).string(message.message);
+            if (message.agentResponse != null && message.hasOwnProperty("agentResponse"))
+                $root.dhl.DHLAgentResponse.encode(message.agentResponse, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+            if (message.chatResponse != null && message.hasOwnProperty("chatResponse"))
+                $root.dhl.DHLChatResponse.encode(message.chatResponse, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
             return writer;
         };
 
@@ -9681,6 +10080,12 @@ $root.dhl = (function() {
                 case 4:
                     message.message = reader.string();
                     break;
+                case 5:
+                    message.agentResponse = $root.dhl.DHLAgentResponse.decode(reader, reader.uint32());
+                    break;
+                case 6:
+                    message.chatResponse = $root.dhl.DHLChatResponse.decode(reader, reader.uint32());
+                    break;
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -9716,6 +10121,7 @@ $root.dhl = (function() {
         DHLScript.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
+            var properties = {};
             if (message.script != null && message.hasOwnProperty("script")) {
                 var error = $root.dhl.Script.verify(message.script);
                 if (error)
@@ -9734,6 +10140,24 @@ $root.dhl = (function() {
             if (message.message != null && message.hasOwnProperty("message"))
                 if (!$util.isString(message.message))
                     return "message: string expected";
+            if (message.agentResponse != null && message.hasOwnProperty("agentResponse")) {
+                properties.dhlResponse = 1;
+                {
+                    var error = $root.dhl.DHLAgentResponse.verify(message.agentResponse);
+                    if (error)
+                        return "agentResponse." + error;
+                }
+            }
+            if (message.chatResponse != null && message.hasOwnProperty("chatResponse")) {
+                if (properties.dhlResponse === 1)
+                    return "dhlResponse: multiple values";
+                properties.dhlResponse = 1;
+                {
+                    var error = $root.dhl.DHLChatResponse.verify(message.chatResponse);
+                    if (error)
+                        return "chatResponse." + error;
+                }
+            }
             return null;
         };
 
@@ -9765,6 +10189,16 @@ $root.dhl = (function() {
                 message.modifiedQuery = String(object.modifiedQuery);
             if (object.message != null)
                 message.message = String(object.message);
+            if (object.agentResponse != null) {
+                if (typeof object.agentResponse !== "object")
+                    throw TypeError(".dhl.DHLScript.agentResponse: object expected");
+                message.agentResponse = $root.dhl.DHLAgentResponse.fromObject(object.agentResponse);
+            }
+            if (object.chatResponse != null) {
+                if (typeof object.chatResponse !== "object")
+                    throw TypeError(".dhl.DHLScript.chatResponse: object expected");
+                message.chatResponse = $root.dhl.DHLChatResponse.fromObject(object.chatResponse);
+            }
             return message;
         };
 
@@ -9799,6 +10233,16 @@ $root.dhl = (function() {
                 object.modifiedQuery = message.modifiedQuery;
             if (message.message != null && message.hasOwnProperty("message"))
                 object.message = message.message;
+            if (message.agentResponse != null && message.hasOwnProperty("agentResponse")) {
+                object.agentResponse = $root.dhl.DHLAgentResponse.toObject(message.agentResponse, options);
+                if (options.oneofs)
+                    object.dhlResponse = "agentResponse";
+            }
+            if (message.chatResponse != null && message.hasOwnProperty("chatResponse")) {
+                object.chatResponse = $root.dhl.DHLChatResponse.toObject(message.chatResponse, options);
+                if (options.oneofs)
+                    object.dhlResponse = "chatResponse";
+            }
             return object;
         };
 
@@ -9814,6 +10258,986 @@ $root.dhl = (function() {
         };
 
         return DHLScript;
+    })();
+
+    dhl.TextResponse = (function() {
+
+        /**
+         * Properties of a TextResponse.
+         * @memberof dhl
+         * @interface ITextResponse
+         * @property {Array.<string>|null} [contents] TextResponse contents
+         */
+
+        /**
+         * Constructs a new TextResponse.
+         * @memberof dhl
+         * @classdesc Represents a TextResponse.
+         * @implements ITextResponse
+         * @constructor
+         * @param {dhl.ITextResponse=} [properties] Properties to set
+         */
+        function TextResponse(properties) {
+            this.contents = [];
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * TextResponse contents.
+         * @member {Array.<string>} contents
+         * @memberof dhl.TextResponse
+         * @instance
+         */
+        TextResponse.prototype.contents = $util.emptyArray;
+
+        /**
+         * Creates a new TextResponse instance using the specified properties.
+         * @function create
+         * @memberof dhl.TextResponse
+         * @static
+         * @param {dhl.ITextResponse=} [properties] Properties to set
+         * @returns {dhl.TextResponse} TextResponse instance
+         */
+        TextResponse.create = function create(properties) {
+            return new TextResponse(properties);
+        };
+
+        /**
+         * Encodes the specified TextResponse message. Does not implicitly {@link dhl.TextResponse.verify|verify} messages.
+         * @function encode
+         * @memberof dhl.TextResponse
+         * @static
+         * @param {dhl.ITextResponse} message TextResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        TextResponse.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.contents != null && message.contents.length)
+                for (var i = 0; i < message.contents.length; ++i)
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.contents[i]);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified TextResponse message, length delimited. Does not implicitly {@link dhl.TextResponse.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof dhl.TextResponse
+         * @static
+         * @param {dhl.ITextResponse} message TextResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        TextResponse.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a TextResponse message from the specified reader or buffer.
+         * @function decode
+         * @memberof dhl.TextResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {dhl.TextResponse} TextResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        TextResponse.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.dhl.TextResponse();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    if (!(message.contents && message.contents.length))
+                        message.contents = [];
+                    message.contents.push(reader.string());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a TextResponse message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof dhl.TextResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {dhl.TextResponse} TextResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        TextResponse.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a TextResponse message.
+         * @function verify
+         * @memberof dhl.TextResponse
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        TextResponse.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.contents != null && message.hasOwnProperty("contents")) {
+                if (!Array.isArray(message.contents))
+                    return "contents: array expected";
+                for (var i = 0; i < message.contents.length; ++i)
+                    if (!$util.isString(message.contents[i]))
+                        return "contents: string[] expected";
+            }
+            return null;
+        };
+
+        /**
+         * Creates a TextResponse message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof dhl.TextResponse
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {dhl.TextResponse} TextResponse
+         */
+        TextResponse.fromObject = function fromObject(object) {
+            if (object instanceof $root.dhl.TextResponse)
+                return object;
+            var message = new $root.dhl.TextResponse();
+            if (object.contents) {
+                if (!Array.isArray(object.contents))
+                    throw TypeError(".dhl.TextResponse.contents: array expected");
+                message.contents = [];
+                for (var i = 0; i < object.contents.length; ++i)
+                    message.contents[i] = String(object.contents[i]);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a TextResponse message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof dhl.TextResponse
+         * @static
+         * @param {dhl.TextResponse} message TextResponse
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        TextResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            var object = {};
+            if (options.arrays || options.defaults)
+                object.contents = [];
+            if (message.contents && message.contents.length) {
+                object.contents = [];
+                for (var j = 0; j < message.contents.length; ++j)
+                    object.contents[j] = message.contents[j];
+            }
+            return object;
+        };
+
+        /**
+         * Converts this TextResponse to JSON.
+         * @function toJSON
+         * @memberof dhl.TextResponse
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        TextResponse.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        return TextResponse;
+    })();
+
+    dhl.CardResponse = (function() {
+
+        /**
+         * Properties of a CardResponse.
+         * @memberof dhl
+         * @interface ICardResponse
+         * @property {string|null} [title] CardResponse title
+         * @property {string|null} [description] CardResponse description
+         * @property {string|null} [imageUrl] CardResponse imageUrl
+         * @property {string|null} [deepLink] CardResponse deepLink
+         * @property {string|null} [script] CardResponse script
+         * @property {string|null} [preCardText] CardResponse preCardText
+         * @property {string|null} [postCardText] CardResponse postCardText
+         */
+
+        /**
+         * Constructs a new CardResponse.
+         * @memberof dhl
+         * @classdesc Represents a CardResponse.
+         * @implements ICardResponse
+         * @constructor
+         * @param {dhl.ICardResponse=} [properties] Properties to set
+         */
+        function CardResponse(properties) {
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * CardResponse title.
+         * @member {string} title
+         * @memberof dhl.CardResponse
+         * @instance
+         */
+        CardResponse.prototype.title = "";
+
+        /**
+         * CardResponse description.
+         * @member {string} description
+         * @memberof dhl.CardResponse
+         * @instance
+         */
+        CardResponse.prototype.description = "";
+
+        /**
+         * CardResponse imageUrl.
+         * @member {string} imageUrl
+         * @memberof dhl.CardResponse
+         * @instance
+         */
+        CardResponse.prototype.imageUrl = "";
+
+        /**
+         * CardResponse deepLink.
+         * @member {string} deepLink
+         * @memberof dhl.CardResponse
+         * @instance
+         */
+        CardResponse.prototype.deepLink = "";
+
+        /**
+         * CardResponse script.
+         * @member {string} script
+         * @memberof dhl.CardResponse
+         * @instance
+         */
+        CardResponse.prototype.script = "";
+
+        /**
+         * CardResponse preCardText.
+         * @member {string} preCardText
+         * @memberof dhl.CardResponse
+         * @instance
+         */
+        CardResponse.prototype.preCardText = "";
+
+        /**
+         * CardResponse postCardText.
+         * @member {string} postCardText
+         * @memberof dhl.CardResponse
+         * @instance
+         */
+        CardResponse.prototype.postCardText = "";
+
+        /**
+         * Creates a new CardResponse instance using the specified properties.
+         * @function create
+         * @memberof dhl.CardResponse
+         * @static
+         * @param {dhl.ICardResponse=} [properties] Properties to set
+         * @returns {dhl.CardResponse} CardResponse instance
+         */
+        CardResponse.create = function create(properties) {
+            return new CardResponse(properties);
+        };
+
+        /**
+         * Encodes the specified CardResponse message. Does not implicitly {@link dhl.CardResponse.verify|verify} messages.
+         * @function encode
+         * @memberof dhl.CardResponse
+         * @static
+         * @param {dhl.ICardResponse} message CardResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        CardResponse.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.title != null && message.hasOwnProperty("title"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.title);
+            if (message.description != null && message.hasOwnProperty("description"))
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.description);
+            if (message.imageUrl != null && message.hasOwnProperty("imageUrl"))
+                writer.uint32(/* id 3, wireType 2 =*/26).string(message.imageUrl);
+            if (message.deepLink != null && message.hasOwnProperty("deepLink"))
+                writer.uint32(/* id 4, wireType 2 =*/34).string(message.deepLink);
+            if (message.script != null && message.hasOwnProperty("script"))
+                writer.uint32(/* id 5, wireType 2 =*/42).string(message.script);
+            if (message.preCardText != null && message.hasOwnProperty("preCardText"))
+                writer.uint32(/* id 6, wireType 2 =*/50).string(message.preCardText);
+            if (message.postCardText != null && message.hasOwnProperty("postCardText"))
+                writer.uint32(/* id 7, wireType 2 =*/58).string(message.postCardText);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified CardResponse message, length delimited. Does not implicitly {@link dhl.CardResponse.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof dhl.CardResponse
+         * @static
+         * @param {dhl.ICardResponse} message CardResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        CardResponse.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a CardResponse message from the specified reader or buffer.
+         * @function decode
+         * @memberof dhl.CardResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {dhl.CardResponse} CardResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        CardResponse.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.dhl.CardResponse();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.title = reader.string();
+                    break;
+                case 2:
+                    message.description = reader.string();
+                    break;
+                case 3:
+                    message.imageUrl = reader.string();
+                    break;
+                case 4:
+                    message.deepLink = reader.string();
+                    break;
+                case 5:
+                    message.script = reader.string();
+                    break;
+                case 6:
+                    message.preCardText = reader.string();
+                    break;
+                case 7:
+                    message.postCardText = reader.string();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a CardResponse message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof dhl.CardResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {dhl.CardResponse} CardResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        CardResponse.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a CardResponse message.
+         * @function verify
+         * @memberof dhl.CardResponse
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        CardResponse.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.title != null && message.hasOwnProperty("title"))
+                if (!$util.isString(message.title))
+                    return "title: string expected";
+            if (message.description != null && message.hasOwnProperty("description"))
+                if (!$util.isString(message.description))
+                    return "description: string expected";
+            if (message.imageUrl != null && message.hasOwnProperty("imageUrl"))
+                if (!$util.isString(message.imageUrl))
+                    return "imageUrl: string expected";
+            if (message.deepLink != null && message.hasOwnProperty("deepLink"))
+                if (!$util.isString(message.deepLink))
+                    return "deepLink: string expected";
+            if (message.script != null && message.hasOwnProperty("script"))
+                if (!$util.isString(message.script))
+                    return "script: string expected";
+            if (message.preCardText != null && message.hasOwnProperty("preCardText"))
+                if (!$util.isString(message.preCardText))
+                    return "preCardText: string expected";
+            if (message.postCardText != null && message.hasOwnProperty("postCardText"))
+                if (!$util.isString(message.postCardText))
+                    return "postCardText: string expected";
+            return null;
+        };
+
+        /**
+         * Creates a CardResponse message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof dhl.CardResponse
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {dhl.CardResponse} CardResponse
+         */
+        CardResponse.fromObject = function fromObject(object) {
+            if (object instanceof $root.dhl.CardResponse)
+                return object;
+            var message = new $root.dhl.CardResponse();
+            if (object.title != null)
+                message.title = String(object.title);
+            if (object.description != null)
+                message.description = String(object.description);
+            if (object.imageUrl != null)
+                message.imageUrl = String(object.imageUrl);
+            if (object.deepLink != null)
+                message.deepLink = String(object.deepLink);
+            if (object.script != null)
+                message.script = String(object.script);
+            if (object.preCardText != null)
+                message.preCardText = String(object.preCardText);
+            if (object.postCardText != null)
+                message.postCardText = String(object.postCardText);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a CardResponse message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof dhl.CardResponse
+         * @static
+         * @param {dhl.CardResponse} message CardResponse
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        CardResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            var object = {};
+            if (options.defaults) {
+                object.title = "";
+                object.description = "";
+                object.imageUrl = "";
+                object.deepLink = "";
+                object.script = "";
+                object.preCardText = "";
+                object.postCardText = "";
+            }
+            if (message.title != null && message.hasOwnProperty("title"))
+                object.title = message.title;
+            if (message.description != null && message.hasOwnProperty("description"))
+                object.description = message.description;
+            if (message.imageUrl != null && message.hasOwnProperty("imageUrl"))
+                object.imageUrl = message.imageUrl;
+            if (message.deepLink != null && message.hasOwnProperty("deepLink"))
+                object.deepLink = message.deepLink;
+            if (message.script != null && message.hasOwnProperty("script"))
+                object.script = message.script;
+            if (message.preCardText != null && message.hasOwnProperty("preCardText"))
+                object.preCardText = message.preCardText;
+            if (message.postCardText != null && message.hasOwnProperty("postCardText"))
+                object.postCardText = message.postCardText;
+            return object;
+        };
+
+        /**
+         * Converts this CardResponse to JSON.
+         * @function toJSON
+         * @memberof dhl.CardResponse
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        CardResponse.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        return CardResponse;
+    })();
+
+    dhl.DynamicEntityValue = (function() {
+
+        /**
+         * Properties of a DynamicEntityValue.
+         * @memberof dhl
+         * @interface IDynamicEntityValue
+         * @property {string|null} [keyword] DynamicEntityValue keyword
+         * @property {Array.<string>|null} [aliases] DynamicEntityValue aliases
+         */
+
+        /**
+         * Constructs a new DynamicEntityValue.
+         * @memberof dhl
+         * @classdesc Represents a DynamicEntityValue.
+         * @implements IDynamicEntityValue
+         * @constructor
+         * @param {dhl.IDynamicEntityValue=} [properties] Properties to set
+         */
+        function DynamicEntityValue(properties) {
+            this.aliases = [];
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * DynamicEntityValue keyword.
+         * @member {string} keyword
+         * @memberof dhl.DynamicEntityValue
+         * @instance
+         */
+        DynamicEntityValue.prototype.keyword = "";
+
+        /**
+         * DynamicEntityValue aliases.
+         * @member {Array.<string>} aliases
+         * @memberof dhl.DynamicEntityValue
+         * @instance
+         */
+        DynamicEntityValue.prototype.aliases = $util.emptyArray;
+
+        /**
+         * Creates a new DynamicEntityValue instance using the specified properties.
+         * @function create
+         * @memberof dhl.DynamicEntityValue
+         * @static
+         * @param {dhl.IDynamicEntityValue=} [properties] Properties to set
+         * @returns {dhl.DynamicEntityValue} DynamicEntityValue instance
+         */
+        DynamicEntityValue.create = function create(properties) {
+            return new DynamicEntityValue(properties);
+        };
+
+        /**
+         * Encodes the specified DynamicEntityValue message. Does not implicitly {@link dhl.DynamicEntityValue.verify|verify} messages.
+         * @function encode
+         * @memberof dhl.DynamicEntityValue
+         * @static
+         * @param {dhl.IDynamicEntityValue} message DynamicEntityValue message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        DynamicEntityValue.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.keyword != null && message.hasOwnProperty("keyword"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.keyword);
+            if (message.aliases != null && message.aliases.length)
+                for (var i = 0; i < message.aliases.length; ++i)
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.aliases[i]);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified DynamicEntityValue message, length delimited. Does not implicitly {@link dhl.DynamicEntityValue.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof dhl.DynamicEntityValue
+         * @static
+         * @param {dhl.IDynamicEntityValue} message DynamicEntityValue message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        DynamicEntityValue.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a DynamicEntityValue message from the specified reader or buffer.
+         * @function decode
+         * @memberof dhl.DynamicEntityValue
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {dhl.DynamicEntityValue} DynamicEntityValue
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        DynamicEntityValue.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.dhl.DynamicEntityValue();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.keyword = reader.string();
+                    break;
+                case 2:
+                    if (!(message.aliases && message.aliases.length))
+                        message.aliases = [];
+                    message.aliases.push(reader.string());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a DynamicEntityValue message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof dhl.DynamicEntityValue
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {dhl.DynamicEntityValue} DynamicEntityValue
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        DynamicEntityValue.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a DynamicEntityValue message.
+         * @function verify
+         * @memberof dhl.DynamicEntityValue
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        DynamicEntityValue.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.keyword != null && message.hasOwnProperty("keyword"))
+                if (!$util.isString(message.keyword))
+                    return "keyword: string expected";
+            if (message.aliases != null && message.hasOwnProperty("aliases")) {
+                if (!Array.isArray(message.aliases))
+                    return "aliases: array expected";
+                for (var i = 0; i < message.aliases.length; ++i)
+                    if (!$util.isString(message.aliases[i]))
+                        return "aliases: string[] expected";
+            }
+            return null;
+        };
+
+        /**
+         * Creates a DynamicEntityValue message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof dhl.DynamicEntityValue
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {dhl.DynamicEntityValue} DynamicEntityValue
+         */
+        DynamicEntityValue.fromObject = function fromObject(object) {
+            if (object instanceof $root.dhl.DynamicEntityValue)
+                return object;
+            var message = new $root.dhl.DynamicEntityValue();
+            if (object.keyword != null)
+                message.keyword = String(object.keyword);
+            if (object.aliases) {
+                if (!Array.isArray(object.aliases))
+                    throw TypeError(".dhl.DynamicEntityValue.aliases: array expected");
+                message.aliases = [];
+                for (var i = 0; i < object.aliases.length; ++i)
+                    message.aliases[i] = String(object.aliases[i]);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a DynamicEntityValue message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof dhl.DynamicEntityValue
+         * @static
+         * @param {dhl.DynamicEntityValue} message DynamicEntityValue
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        DynamicEntityValue.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            var object = {};
+            if (options.arrays || options.defaults)
+                object.aliases = [];
+            if (options.defaults)
+                object.keyword = "";
+            if (message.keyword != null && message.hasOwnProperty("keyword"))
+                object.keyword = message.keyword;
+            if (message.aliases && message.aliases.length) {
+                object.aliases = [];
+                for (var j = 0; j < message.aliases.length; ++j)
+                    object.aliases[j] = message.aliases[j];
+            }
+            return object;
+        };
+
+        /**
+         * Converts this DynamicEntityValue to JSON.
+         * @function toJSON
+         * @memberof dhl.DynamicEntityValue
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        DynamicEntityValue.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        return DynamicEntityValue;
+    })();
+
+    dhl.DynamicEntity = (function() {
+
+        /**
+         * Properties of a DynamicEntity.
+         * @memberof dhl
+         * @interface IDynamicEntity
+         * @property {string|null} [typeName] DynamicEntity typeName
+         * @property {Array.<dhl.IDynamicEntityValue>|null} [values] DynamicEntity values
+         */
+
+        /**
+         * Constructs a new DynamicEntity.
+         * @memberof dhl
+         * @classdesc Represents a DynamicEntity.
+         * @implements IDynamicEntity
+         * @constructor
+         * @param {dhl.IDynamicEntity=} [properties] Properties to set
+         */
+        function DynamicEntity(properties) {
+            this.values = [];
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * DynamicEntity typeName.
+         * @member {string} typeName
+         * @memberof dhl.DynamicEntity
+         * @instance
+         */
+        DynamicEntity.prototype.typeName = "";
+
+        /**
+         * DynamicEntity values.
+         * @member {Array.<dhl.IDynamicEntityValue>} values
+         * @memberof dhl.DynamicEntity
+         * @instance
+         */
+        DynamicEntity.prototype.values = $util.emptyArray;
+
+        /**
+         * Creates a new DynamicEntity instance using the specified properties.
+         * @function create
+         * @memberof dhl.DynamicEntity
+         * @static
+         * @param {dhl.IDynamicEntity=} [properties] Properties to set
+         * @returns {dhl.DynamicEntity} DynamicEntity instance
+         */
+        DynamicEntity.create = function create(properties) {
+            return new DynamicEntity(properties);
+        };
+
+        /**
+         * Encodes the specified DynamicEntity message. Does not implicitly {@link dhl.DynamicEntity.verify|verify} messages.
+         * @function encode
+         * @memberof dhl.DynamicEntity
+         * @static
+         * @param {dhl.IDynamicEntity} message DynamicEntity message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        DynamicEntity.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.typeName != null && message.hasOwnProperty("typeName"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.typeName);
+            if (message.values != null && message.values.length)
+                for (var i = 0; i < message.values.length; ++i)
+                    $root.dhl.DynamicEntityValue.encode(message.values[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified DynamicEntity message, length delimited. Does not implicitly {@link dhl.DynamicEntity.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof dhl.DynamicEntity
+         * @static
+         * @param {dhl.IDynamicEntity} message DynamicEntity message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        DynamicEntity.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a DynamicEntity message from the specified reader or buffer.
+         * @function decode
+         * @memberof dhl.DynamicEntity
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {dhl.DynamicEntity} DynamicEntity
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        DynamicEntity.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.dhl.DynamicEntity();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.typeName = reader.string();
+                    break;
+                case 2:
+                    if (!(message.values && message.values.length))
+                        message.values = [];
+                    message.values.push($root.dhl.DynamicEntityValue.decode(reader, reader.uint32()));
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a DynamicEntity message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof dhl.DynamicEntity
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {dhl.DynamicEntity} DynamicEntity
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        DynamicEntity.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a DynamicEntity message.
+         * @function verify
+         * @memberof dhl.DynamicEntity
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        DynamicEntity.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.typeName != null && message.hasOwnProperty("typeName"))
+                if (!$util.isString(message.typeName))
+                    return "typeName: string expected";
+            if (message.values != null && message.hasOwnProperty("values")) {
+                if (!Array.isArray(message.values))
+                    return "values: array expected";
+                for (var i = 0; i < message.values.length; ++i) {
+                    var error = $root.dhl.DynamicEntityValue.verify(message.values[i]);
+                    if (error)
+                        return "values." + error;
+                }
+            }
+            return null;
+        };
+
+        /**
+         * Creates a DynamicEntity message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof dhl.DynamicEntity
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {dhl.DynamicEntity} DynamicEntity
+         */
+        DynamicEntity.fromObject = function fromObject(object) {
+            if (object instanceof $root.dhl.DynamicEntity)
+                return object;
+            var message = new $root.dhl.DynamicEntity();
+            if (object.typeName != null)
+                message.typeName = String(object.typeName);
+            if (object.values) {
+                if (!Array.isArray(object.values))
+                    throw TypeError(".dhl.DynamicEntity.values: array expected");
+                message.values = [];
+                for (var i = 0; i < object.values.length; ++i) {
+                    if (typeof object.values[i] !== "object")
+                        throw TypeError(".dhl.DynamicEntity.values: object expected");
+                    message.values[i] = $root.dhl.DynamicEntityValue.fromObject(object.values[i]);
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a DynamicEntity message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof dhl.DynamicEntity
+         * @static
+         * @param {dhl.DynamicEntity} message DynamicEntity
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        DynamicEntity.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            var object = {};
+            if (options.arrays || options.defaults)
+                object.values = [];
+            if (options.defaults)
+                object.typeName = "";
+            if (message.typeName != null && message.hasOwnProperty("typeName"))
+                object.typeName = message.typeName;
+            if (message.values && message.values.length) {
+                object.values = [];
+                for (var j = 0; j < message.values.length; ++j)
+                    object.values[j] = $root.dhl.DynamicEntityValue.toObject(message.values[j], options);
+            }
+            return object;
+        };
+
+        /**
+         * Converts this DynamicEntity to JSON.
+         * @function toJSON
+         * @memberof dhl.DynamicEntity
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        DynamicEntity.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        return DynamicEntity;
     })();
 
     return dhl;

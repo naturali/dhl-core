@@ -3,6 +3,7 @@ import { w3cwebsocket } from 'websocket';
 
 import { dhlmixer, dhl } from './../static/js/dhl';
 import { restfulAddr, websocketAddr } from './config';
+import { fieldValidate } from './util';
 
 export interface DHLAgentInfo {
   agentId: string;
@@ -32,7 +33,6 @@ export interface DHLConnectParams {
   userName?: string;
 }
 
-const defaultAgentName = 'DHL-agent';
 export class DHL {
   private agent: DHLAgentInfo;
   private app: DHLAppInfo;
@@ -40,12 +40,25 @@ export class DHL {
   private token: string;
   private client: any;
 
+  /**
+   * Creates an instance of DHL.
+   * @param {DHLAgentInfo} agent
+   * @memberof DHL
+   */
   constructor(agent: DHLAgentInfo) {
+    fieldValidate(agent, ['agentId']);
     this.agent = { ...agent };
   }
 
+  /**
+   * Verify app and get auth token.
+   *
+   * @param {DHLAppInfo} app
+   * @param {(token: string) => void} [callback]
+   * @memberof DHL
+   */
   async verify(app: DHLAppInfo, callback?: (token: string) => void) {
-    console.log('get verify app: ', app);
+    fieldValidate(app, ['appId', 'appKey', 'appSecret']);
 
     const MessageType = dhlmixer.AuthenticationParams;
     const message = MessageType.create(app);
@@ -66,11 +79,9 @@ export class DHL {
         const responseBuffer = res.data;
         let responseData = '';
 
-        console.log('get access token in getAccessToken: ', res, res.data);
         if (res.status === 200 && responseBuffer) {
           const resData = new Buffer(responseBuffer);
 
-          console.log('get response buffer: ', resData);
           responseData = dhlmixer.AccessToken.decode(resData).accessToken || '';
         }
 
@@ -81,7 +92,19 @@ export class DHL {
     }
   }
 
+  /**
+   * Connect websocket and listen server messages.
+   *
+   * @param {DHLConnectParams} params
+   * @param {(message: string, messageType: string, res: any) => void} onMessage
+   * @param {() => void} [onOpen]
+   * @param {() => void} [onClose]
+   * @param {(error: any) => void} [onError]
+   * @memberof DHL
+   */
   connectWebsocket(params: DHLConnectParams, onMessage: (message: string, messageType: string, res: any) => void, onOpen?: () => void, onClose?: () => void, onError?: (error: any) => void) {
+    fieldValidate(params, ['userId', 'isCustomerService']);
+
     const { userId, userName, isCustomerService } = params;
 
     if (userId) {
@@ -104,13 +127,13 @@ export class DHL {
       );
     }
 
-    // console.log('user in componentDidMount: ', user, client);
-    this.client.onerror = (err: any) => {
-      console.log('Connection Error: ', err);
+    this.client.onerror = (error: any) => {
+      if (onError) {
+        onError(error);
+      }
     };
 
     this.client.onopen = () => {
-      console.log('in onopen: WebSocket Client Connected pollForKefuResponse.');
       const defaultSeq = 'server-client-seq';
       const message = dhlmixer.KerfuAction.create({
         seq: defaultSeq,
@@ -125,26 +148,29 @@ export class DHL {
       const buffer = dhlmixer.KerfuAction.encode(message).finish();
 
       this.client.send(buffer);
+      if (onOpen) {
+        onOpen();
+      }
     };
 
     this.client.onclose = () => {
-      console.log('server_protocol Client Closed');
+      if (onClose) {
+        onClose();
+      }
     };
 
     this.client.onmessage = (res: any) => {
-      console.log('get res in client.onmessage: ', res);
       const resData = res.data;
       const fileReader = new FileReader();
+
+      // Parse blob data
       fileReader.onload = (event: any) => {
         const bufferData = event.target.result;
-        console.log('get arrayBuffer: ', bufferData);
-
-        // const bufferData = new Buffer(new ArrayBuffer(resData));
         const response: any = dhlmixer.KerfuEvent.decode(
           new Buffer(bufferData)
         ).toJSON();
-        console.log('get response in client.onmessage: ', response);
 
+        console.log('get response in fileReader: ', response);
         if (response && response.event === 'MessagePosted') {
           const responseData = response.messagePostedData || {};
           this.getHistoryMessages(responseData, onMessage);
@@ -152,16 +178,16 @@ export class DHL {
       };
       fileReader.readAsArrayBuffer(resData);
     };
-
-    setTimeout(() => {
-      const content = document.getElementById('conversation-content');
-
-      if (content) {
-        content.scrollTo(0, content.scrollHeight);
-      }
-    }, 100);
   }
 
+  /**
+   * Get history messages
+   *
+   * @private
+   * @param {*} params
+   * @param {(message: string, messageType: string, res: any) => void} callback
+   * @memberof DHL
+   */
   private getHistoryMessages(params: any, callback: (message: string, messageType: string, res: any) => void) {
     axios.get(`${ restfulAddr }/v1/message_history`, {
       params,
@@ -178,16 +204,25 @@ export class DHL {
       const responseMessage = message && message.response && message.response.message || '';
       const messageType = message && message.response && message.response.messageContentType || 'text';
 
+      console.log('get res in getHistoryMessages: ', response);
       if (callback) {
         callback(responseMessage, messageType.toLowerCase(), message);
       }
     });
   }
 
+  /**
+   * send a message
+   *
+   * @param {SendMessageParamsInfo} params
+   * @param {(message: string, messageType: string, res: any) => void} callback
+   * @memberof DHL
+   */
   send(params: SendMessageParamsInfo, callback: (message: string, messageType: string, res: any) => void) {
+    fieldValidate(params, ['message', 'messageContentType', 'forceHandleManually']);
+
     const { message, messageContentType, forceHandleManually } = params;
     const dateTime = new Date().getTime();
-    console.log('get message in send: ', params);
 
     if (message) {
       const MessageType = dhlmixer.KerfuMessage;
@@ -210,11 +245,7 @@ export class DHL {
           reqId: `customer-request-${ dateTime }`
         })
       };
-      console.log('get message before send: ', messageData);
       const paramsMessage = MessageType.create(messageData);
-      // const verify = MessageType.verify(messageData);
-
-      console.log('get message & verify here: ', message);
       const buffer = MessageType.encode(paramsMessage).finish();
 
       axios.post(`${ restfulAddr }/v1/kerfu_messages`, buffer, {
@@ -227,7 +258,6 @@ export class DHL {
         transformRequest: (reqData, headers) => reqData,
         transformResponse: resData => resData
       }).then((res: any) => {
-        console.log('get res after send: ', res);
         const responseBuffer = res.data;
 
         if (res.status === 200 && responseBuffer) {
@@ -236,13 +266,21 @@ export class DHL {
           const messageType = responseData.message && responseData.message.response && responseData.message.response.messageContentType || 'text';
           const responseMessage = responseData.message && responseData.message.response && responseData.message.response.dhlScript && responseData.message.response.dhlScript.message || '';
 
-          // console.log('get decode data after send: ', responseMessage, messageType, responseData);
+          console.log('get responseData after send: ', responseData);
           callback(responseMessage, messageType.toLowerCase(), res.data);
         }
       });
     }
   }
 
+  /**
+   * Upload an image and get the URI
+   *
+   * @static
+   * @param {*} file
+   * @param {(res: any) => void} callback
+   * @memberof DHL
+   */
   static uploadImage(file: any, callback: (res: any) => void) {
     if (file) {
       const formData = new FormData();
@@ -253,9 +291,10 @@ export class DHL {
           'content-type': 'multipart/form-data'
         }
       }).then((res: any) => {
-        console.log('get res in uploadImage: ', res);
         callback(res.data);
       });
+    } else {
+      throw Error(('File is missing.'));
     }
   }
 }
