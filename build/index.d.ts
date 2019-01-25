@@ -19,7 +19,6 @@ export interface SendMessageParamsInfo {
 }
 export interface DHLConnectParams {
     userId: string;
-    isCustomerService: boolean;
     userName?: string;
 }
 export declare class DHL {

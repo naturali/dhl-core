@@ -29,7 +29,6 @@ export interface SendMessageParamsInfo {
 
 export interface DHLConnectParams {
   userId: string;
-  isCustomerService: boolean;
   userName?: string;
 }
 
@@ -105,7 +104,7 @@ export class DHL {
   connectWebsocket(params: DHLConnectParams, onMessage: (message: string, messageType: string, res: any) => void, onOpen?: () => void, onClose?: () => void, onError?: (error: any) => void) {
     fieldValidate(params, ['userId', 'isCustomerService']);
 
-    const { userId, userName, isCustomerService } = params;
+    const { userId, userName } = params;
 
     if (userId) {
       this.user = {
@@ -140,7 +139,6 @@ export class DHL {
         action: dhlmixer.Action.Authentication,
         authenticationData: dhlmixer.KerfuAuthenticationData.create({
           userId,
-          isCustomerService,
           platformType: 'Web',
           appId: this.app.appId
         })
@@ -170,10 +168,15 @@ export class DHL {
           new Buffer(bufferData)
         ).toJSON();
 
-        console.log('get response in fileReader: ', response);
         if (response && response.event === 'MessagePosted') {
           const responseData = response.messagePostedData || {};
-          this.getHistoryMessages(responseData, onMessage);
+          const paramsData = {
+            message_id: responseData.messageId,
+            session_id: responseData.sessionId,
+            message_type: responseData.messageType
+          };
+
+          this.getHistoryMessages(paramsData, onMessage);
         }
       };
       fileReader.readAsArrayBuffer(resData);
@@ -201,10 +204,15 @@ export class DHL {
       const buffer = new Buffer(resData);
       const response = dhlmixer.KerfuMessageList.decode(buffer).toJSON();
       const message = response && response.messages && response.messages[0];
-      const responseMessage = message && message.response && message.response.message || '';
+      const responseMessages = (message &&
+          message.response &&
+          message.response.dhlScript &&
+          message.response.dhlScript.chatResponse &&
+          message.response.dhlScript.chatResponse.msgs) ||
+        [];
+      const responseMessage = responseMessages.map((item: any) => item && item.textMsg)[0] || '';
       const messageType = message && message.response && message.response.messageContentType || 'text';
 
-      console.log('get res in getHistoryMessages: ', response);
       if (callback) {
         callback(responseMessage, messageType.toLowerCase(), message);
       }
@@ -263,11 +271,13 @@ export class DHL {
         if (res.status === 200 && responseBuffer) {
           const resData = new Buffer(responseBuffer);
           const responseData = dhlmixer.KerfuResponse.decode(resData).toJSON();
-          const messageType = responseData.message && responseData.message.response && responseData.message.response.messageContentType || 'text';
-          const responseMessage = responseData.message && responseData.message.response && responseData.message.response.dhlScript && responseData.message.response.dhlScript.message || '';
+          const defaultMessage = responseData.messages && responseData.messages[0];
+          const messageType = defaultMessage && defaultMessage.response && defaultMessage.response.messageContentType || 'text';
+          const responseMessages = defaultMessage && defaultMessage.response && defaultMessage.response.dhlScript && defaultMessage.response.dhlScript.chatResponse
+            && defaultMessage.response.dhlScript.chatResponse.msgs || [];
+          const messages = responseMessages.map((item: any) => item && item.textMsg);
 
-          console.log('get responseData after send: ', responseData);
-          callback(responseMessage, messageType.toLowerCase(), res.data);
+          callback(messages, messageType.toLowerCase(), res.data);
         }
       });
     }

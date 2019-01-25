@@ -54,7 +54,7 @@ class DHL {
     }
     connectWebsocket(params, onMessage, onOpen, onClose, onError) {
         util_1.fieldValidate(params, ['userId', 'isCustomerService']);
-        const { userId, userName, isCustomerService } = params;
+        const { userId, userName } = params;
         if (userId) {
             this.user = {
                 userId,
@@ -78,7 +78,6 @@ class DHL {
                 action: dhl_1.dhlmixer.Action.Authentication,
                 authenticationData: dhl_1.dhlmixer.KerfuAuthenticationData.create({
                     userId,
-                    isCustomerService,
                     platformType: 'Web',
                     appId: this.app.appId
                 })
@@ -100,10 +99,14 @@ class DHL {
             fileReader.onload = (event) => {
                 const bufferData = event.target.result;
                 const response = dhl_1.dhlmixer.KerfuEvent.decode(new Buffer(bufferData)).toJSON();
-                console.log('get response in fileReader: ', response);
                 if (response && response.event === 'MessagePosted') {
                     const responseData = response.messagePostedData || {};
-                    this.getHistoryMessages(responseData, onMessage);
+                    const paramsData = {
+                        message_id: responseData.messageId,
+                        session_id: responseData.sessionId,
+                        message_type: responseData.messageType
+                    };
+                    this.getHistoryMessages(paramsData, onMessage);
                 }
             };
             fileReader.readAsArrayBuffer(resData);
@@ -122,9 +125,14 @@ class DHL {
             const buffer = new Buffer(resData);
             const response = dhl_1.dhlmixer.KerfuMessageList.decode(buffer).toJSON();
             const message = response && response.messages && response.messages[0];
-            const responseMessage = message && message.response && message.response.message || '';
+            const responseMessages = (message &&
+                message.response &&
+                message.response.dhlScript &&
+                message.response.dhlScript.chatResponse &&
+                message.response.dhlScript.chatResponse.msgs) ||
+                [];
+            const responseMessage = responseMessages.map((item) => item && item.textMsg)[0] || '';
             const messageType = message && message.response && message.response.messageContentType || 'text';
-            console.log('get res in getHistoryMessages: ', response);
             if (callback) {
                 callback(responseMessage, messageType.toLowerCase(), message);
             }
@@ -171,10 +179,12 @@ class DHL {
                 if (res.status === 200 && responseBuffer) {
                     const resData = new Buffer(responseBuffer);
                     const responseData = dhl_1.dhlmixer.KerfuResponse.decode(resData).toJSON();
-                    const messageType = responseData.message && responseData.message.response && responseData.message.response.messageContentType || 'text';
-                    const responseMessage = responseData.message && responseData.message.response && responseData.message.response.dhlScript && responseData.message.response.dhlScript.message || '';
-                    console.log('get responseData after send: ', responseData);
-                    callback(responseMessage, messageType.toLowerCase(), res.data);
+                    const defaultMessage = responseData.messages && responseData.messages[0];
+                    const messageType = defaultMessage && defaultMessage.response && defaultMessage.response.messageContentType || 'text';
+                    const responseMessages = defaultMessage && defaultMessage.response && defaultMessage.response.dhlScript && defaultMessage.response.dhlScript.chatResponse
+                        && defaultMessage.response.dhlScript.chatResponse.msgs || [];
+                    const messages = responseMessages.map((item) => item && item.textMsg);
+                    callback(messages, messageType.toLowerCase(), res.data);
                 }
             });
         }
