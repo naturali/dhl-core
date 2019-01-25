@@ -78,7 +78,7 @@ class DHL {
                 action: dhl_1.dhlmixer.Action.Authentication,
                 authenticationData: dhl_1.dhlmixer.KerfuAuthenticationData.create({
                     userId,
-                    platformType: 'Web',
+                    platformType: 'kerfu_web',
                     appId: this.app.appId
                 })
             });

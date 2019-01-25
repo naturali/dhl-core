@@ -139,7 +139,7 @@ export class DHL {
         action: dhlmixer.Action.Authentication,
         authenticationData: dhlmixer.KerfuAuthenticationData.create({
           userId,
-          platformType: 'Web',
+          platformType: 'kerfu_web',
           appId: this.app.appId
         })
       });

@@ -1,2 +1,2 @@
-export declare const restfulAddr = "https://dhlmixer.naturali.io";
-export declare const websocketAddr = "wss://dhlmixer.naturali.io";
+export declare const restfulAddr = "https://dhlmixer-dev.naturali.io";
+export declare const websocketAddr = "wss://dhlmixer-dev.naturali.io";
