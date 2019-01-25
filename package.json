@@ -1,6 +1,6 @@
 {
   "name": "dhl-core",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Web SDK of Duihualiu",
   "main": "build/index.js",
   "typings": "build/index.d.ts",
