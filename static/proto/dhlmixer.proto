@@ -4,6 +4,7 @@ package dhlmixer;
 
 import "dhl.proto";
 import "dynamic_entity.proto";
+import "filled_attribute.proto";
 
 option go_package = "p";
 
@@ -73,8 +74,8 @@ message DHLMixerRequest {
 }
 
 message DHLMixerError {
-    int32 error_code = 1;
-    string error_message = 2;
+   int32 error_code = 1;
+   string error_message = 2;
 }
 
 message KerfuPollRequest {
@@ -165,6 +166,9 @@ message DHLMixerRequestData {
     bool force_handle_manually = 6;
     dhl.DHLRequestType dhl_request_type = 7; // dhl request type; reference dhl.proto
     repeated dhl.DynamicEntity dynamic_entities = 8;
+    repeated dhl.FilledAttribute global_attributes = 9;
+    string intent_name = 10;
+    repeated dhl.FilledAttribute local_attributes = 11;
 }
 
 message DHLMixerResponseData {
@@ -197,13 +201,14 @@ message KerfuMessage {
 }
 
 message KerfuError {
-    int32 error_code = 1;
-    string error_message = 2;
+   int32 error_code = 1;
+   string error_message = 2;
 }
 
 message KerfuMessageAck {
     int32 session_id = 1;
     int64 message_id = 2;
+    int64 timestamp = 3;
 }
 
 message KerfuResponse {

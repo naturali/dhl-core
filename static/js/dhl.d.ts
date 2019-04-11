@@ -1,4 +1,1509 @@
 import * as $protobuf from "protobufjs";
+/** Namespace dhl. */
+export namespace dhl {
+
+    /** DHLRequestType enum. */
+    enum DHLRequestType {
+        Normal = 0,
+        AgentList = 1,
+        WelcomeMessage = 2
+    }
+
+    /** Properties of a DHLAgentInfo. */
+    interface IDHLAgentInfo {
+
+        /** DHLAgentInfo id */
+        id?: (string|null);
+
+        /** DHLAgentInfo name */
+        name?: (string|null);
+
+        /** DHLAgentInfo org */
+        org?: (string|null);
+
+        /** DHLAgentInfo description */
+        description?: (string|null);
+
+        /** DHLAgentInfo iconUrl */
+        iconUrl?: (string|null);
+
+        /** DHLAgentInfo type */
+        type?: (string|null);
+    }
+
+    /** Represents a DHLAgentInfo. */
+    class DHLAgentInfo implements IDHLAgentInfo {
+
+        /**
+         * Constructs a new DHLAgentInfo.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: dhl.IDHLAgentInfo);
+
+        /** DHLAgentInfo id. */
+        public id: string;
+
+        /** DHLAgentInfo name. */
+        public name: string;
+
+        /** DHLAgentInfo org. */
+        public org: string;
+
+        /** DHLAgentInfo description. */
+        public description: string;
+
+        /** DHLAgentInfo iconUrl. */
+        public iconUrl: string;
+
+        /** DHLAgentInfo type. */
+        public type: string;
+
+        /**
+         * Creates a new DHLAgentInfo instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns DHLAgentInfo instance
+         */
+        public static create(properties?: dhl.IDHLAgentInfo): dhl.DHLAgentInfo;
+
+        /**
+         * Encodes the specified DHLAgentInfo message. Does not implicitly {@link dhl.DHLAgentInfo.verify|verify} messages.
+         * @param message DHLAgentInfo message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: dhl.IDHLAgentInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified DHLAgentInfo message, length delimited. Does not implicitly {@link dhl.DHLAgentInfo.verify|verify} messages.
+         * @param message DHLAgentInfo message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: dhl.IDHLAgentInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a DHLAgentInfo message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns DHLAgentInfo
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.DHLAgentInfo;
+
+        /**
+         * Decodes a DHLAgentInfo message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns DHLAgentInfo
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.DHLAgentInfo;
+
+        /**
+         * Verifies a DHLAgentInfo message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a DHLAgentInfo message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns DHLAgentInfo
+         */
+        public static fromObject(object: { [k: string]: any }): dhl.DHLAgentInfo;
+
+        /**
+         * Creates a plain object from a DHLAgentInfo message. Also converts values to other types if specified.
+         * @param message DHLAgentInfo
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: dhl.DHLAgentInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this DHLAgentInfo to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
+    /** Properties of a DHLAgentResponse. */
+    interface IDHLAgentResponse {
+
+        /** DHLAgentResponse agentList */
+        agentList?: (dhl.IDHLAgentInfo[]|null);
+    }
+
+    /** Represents a DHLAgentResponse. */
+    class DHLAgentResponse implements IDHLAgentResponse {
+
+        /**
+         * Constructs a new DHLAgentResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: dhl.IDHLAgentResponse);
+
+        /** DHLAgentResponse agentList. */
+        public agentList: dhl.IDHLAgentInfo[];
+
+        /**
+         * Creates a new DHLAgentResponse instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns DHLAgentResponse instance
+         */
+        public static create(properties?: dhl.IDHLAgentResponse): dhl.DHLAgentResponse;
+
+        /**
+         * Encodes the specified DHLAgentResponse message. Does not implicitly {@link dhl.DHLAgentResponse.verify|verify} messages.
+         * @param message DHLAgentResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: dhl.IDHLAgentResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified DHLAgentResponse message, length delimited. Does not implicitly {@link dhl.DHLAgentResponse.verify|verify} messages.
+         * @param message DHLAgentResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: dhl.IDHLAgentResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a DHLAgentResponse message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns DHLAgentResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.DHLAgentResponse;
+
+        /**
+         * Decodes a DHLAgentResponse message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns DHLAgentResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.DHLAgentResponse;
+
+        /**
+         * Verifies a DHLAgentResponse message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a DHLAgentResponse message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns DHLAgentResponse
+         */
+        public static fromObject(object: { [k: string]: any }): dhl.DHLAgentResponse;
+
+        /**
+         * Creates a plain object from a DHLAgentResponse message. Also converts values to other types if specified.
+         * @param message DHLAgentResponse
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: dhl.DHLAgentResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this DHLAgentResponse to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
+    /** Properties of a DHLCardResponse. */
+    interface IDHLCardResponse {
+
+        /** DHLCardResponse title */
+        title?: (string|null);
+
+        /** DHLCardResponse description */
+        description?: (string|null);
+
+        /** DHLCardResponse imageUrl */
+        imageUrl?: (string|null);
+
+        /** DHLCardResponse deepLink */
+        deepLink?: (string|null);
+
+        /** DHLCardResponse script */
+        script?: (string|null);
+
+        /** DHLCardResponse preCardText */
+        preCardText?: (string|null);
+
+        /** DHLCardResponse postCardText */
+        postCardText?: (string|null);
+
+        /** DHLCardResponse coreference */
+        coreference?: (string|null);
+    }
+
+    /** Represents a DHLCardResponse. */
+    class DHLCardResponse implements IDHLCardResponse {
+
+        /**
+         * Constructs a new DHLCardResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: dhl.IDHLCardResponse);
+
+        /** DHLCardResponse title. */
+        public title: string;
+
+        /** DHLCardResponse description. */
+        public description: string;
+
+        /** DHLCardResponse imageUrl. */
+        public imageUrl: string;
+
+        /** DHLCardResponse deepLink. */
+        public deepLink: string;
+
+        /** DHLCardResponse script. */
+        public script: string;
+
+        /** DHLCardResponse preCardText. */
+        public preCardText: string;
+
+        /** DHLCardResponse postCardText. */
+        public postCardText: string;
+
+        /** DHLCardResponse coreference. */
+        public coreference: string;
+
+        /**
+         * Creates a new DHLCardResponse instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns DHLCardResponse instance
+         */
+        public static create(properties?: dhl.IDHLCardResponse): dhl.DHLCardResponse;
+
+        /**
+         * Encodes the specified DHLCardResponse message. Does not implicitly {@link dhl.DHLCardResponse.verify|verify} messages.
+         * @param message DHLCardResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: dhl.IDHLCardResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified DHLCardResponse message, length delimited. Does not implicitly {@link dhl.DHLCardResponse.verify|verify} messages.
+         * @param message DHLCardResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: dhl.IDHLCardResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a DHLCardResponse message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns DHLCardResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.DHLCardResponse;
+
+        /**
+         * Decodes a DHLCardResponse message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns DHLCardResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.DHLCardResponse;
+
+        /**
+         * Verifies a DHLCardResponse message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a DHLCardResponse message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns DHLCardResponse
+         */
+        public static fromObject(object: { [k: string]: any }): dhl.DHLCardResponse;
+
+        /**
+         * Creates a plain object from a DHLCardResponse message. Also converts values to other types if specified.
+         * @param message DHLCardResponse
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: dhl.DHLCardResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this DHLCardResponse to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
+    /** Properties of a Script. */
+    interface IScript {
+
+        /** Script textResponse */
+        textResponse?: (string|null);
+
+        /** Script cardResponse */
+        cardResponse?: (dhl.IDHLCardResponse|null);
+
+        /** Script agentResponse */
+        agentResponse?: (dhl.IDHLAgentResponse|null);
+    }
+
+    /** Represents a Script. */
+    class Script implements IScript {
+
+        /**
+         * Constructs a new Script.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: dhl.IScript);
+
+        /** Script textResponse. */
+        public textResponse: string;
+
+        /** Script cardResponse. */
+        public cardResponse?: (dhl.IDHLCardResponse|null);
+
+        /** Script agentResponse. */
+        public agentResponse?: (dhl.IDHLAgentResponse|null);
+
+        /** Script scriptData. */
+        public scriptData?: ("textResponse"|"cardResponse"|"agentResponse");
+
+        /**
+         * Creates a new Script instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns Script instance
+         */
+        public static create(properties?: dhl.IScript): dhl.Script;
+
+        /**
+         * Encodes the specified Script message. Does not implicitly {@link dhl.Script.verify|verify} messages.
+         * @param message Script message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: dhl.IScript, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified Script message, length delimited. Does not implicitly {@link dhl.Script.verify|verify} messages.
+         * @param message Script message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: dhl.IScript, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a Script message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns Script
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.Script;
+
+        /**
+         * Decodes a Script message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns Script
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.Script;
+
+        /**
+         * Verifies a Script message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a Script message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns Script
+         */
+        public static fromObject(object: { [k: string]: any }): dhl.Script;
+
+        /**
+         * Creates a plain object from a Script message. Also converts values to other types if specified.
+         * @param message Script
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: dhl.Script, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this Script to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
+    /** Properties of a RepeatedCardResponse. */
+    interface IRepeatedCardResponse {
+
+        /** RepeatedCardResponse header */
+        header?: (string|null);
+
+        /** RepeatedCardResponse cardMsgs */
+        cardMsgs?: (dhl.IDHLCardResponse[]|null);
+
+        /** RepeatedCardResponse useCoreference */
+        useCoreference?: (boolean|null);
+    }
+
+    /** Represents a RepeatedCardResponse. */
+    class RepeatedCardResponse implements IRepeatedCardResponse {
+
+        /**
+         * Constructs a new RepeatedCardResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: dhl.IRepeatedCardResponse);
+
+        /** RepeatedCardResponse header. */
+        public header: string;
+
+        /** RepeatedCardResponse cardMsgs. */
+        public cardMsgs: dhl.IDHLCardResponse[];
+
+        /** RepeatedCardResponse useCoreference. */
+        public useCoreference: boolean;
+
+        /**
+         * Creates a new RepeatedCardResponse instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns RepeatedCardResponse instance
+         */
+        public static create(properties?: dhl.IRepeatedCardResponse): dhl.RepeatedCardResponse;
+
+        /**
+         * Encodes the specified RepeatedCardResponse message. Does not implicitly {@link dhl.RepeatedCardResponse.verify|verify} messages.
+         * @param message RepeatedCardResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: dhl.IRepeatedCardResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified RepeatedCardResponse message, length delimited. Does not implicitly {@link dhl.RepeatedCardResponse.verify|verify} messages.
+         * @param message RepeatedCardResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: dhl.IRepeatedCardResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a RepeatedCardResponse message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns RepeatedCardResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.RepeatedCardResponse;
+
+        /**
+         * Decodes a RepeatedCardResponse message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns RepeatedCardResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.RepeatedCardResponse;
+
+        /**
+         * Verifies a RepeatedCardResponse message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a RepeatedCardResponse message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns RepeatedCardResponse
+         */
+        public static fromObject(object: { [k: string]: any }): dhl.RepeatedCardResponse;
+
+        /**
+         * Creates a plain object from a RepeatedCardResponse message. Also converts values to other types if specified.
+         * @param message RepeatedCardResponse
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: dhl.RepeatedCardResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this RepeatedCardResponse to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
+    /** Properties of a TextListItem. */
+    interface ITextListItem {
+
+        /** TextListItem content1 */
+        content1?: (string|null);
+
+        /** TextListItem content2 */
+        content2?: (string|null);
+
+        /** TextListItem content3 */
+        content3?: (string|null);
+
+        /** TextListItem coreference */
+        coreference?: (string|null);
+    }
+
+    /** Represents a TextListItem. */
+    class TextListItem implements ITextListItem {
+
+        /**
+         * Constructs a new TextListItem.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: dhl.ITextListItem);
+
+        /** TextListItem content1. */
+        public content1: string;
+
+        /** TextListItem content2. */
+        public content2: string;
+
+        /** TextListItem content3. */
+        public content3: string;
+
+        /** TextListItem coreference. */
+        public coreference: string;
+
+        /**
+         * Creates a new TextListItem instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns TextListItem instance
+         */
+        public static create(properties?: dhl.ITextListItem): dhl.TextListItem;
+
+        /**
+         * Encodes the specified TextListItem message. Does not implicitly {@link dhl.TextListItem.verify|verify} messages.
+         * @param message TextListItem message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: dhl.ITextListItem, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified TextListItem message, length delimited. Does not implicitly {@link dhl.TextListItem.verify|verify} messages.
+         * @param message TextListItem message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: dhl.ITextListItem, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a TextListItem message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns TextListItem
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.TextListItem;
+
+        /**
+         * Decodes a TextListItem message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns TextListItem
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.TextListItem;
+
+        /**
+         * Verifies a TextListItem message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a TextListItem message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns TextListItem
+         */
+        public static fromObject(object: { [k: string]: any }): dhl.TextListItem;
+
+        /**
+         * Creates a plain object from a TextListItem message. Also converts values to other types if specified.
+         * @param message TextListItem
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: dhl.TextListItem, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this TextListItem to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
+    /** Properties of a RepeatedTextResponse. */
+    interface IRepeatedTextResponse {
+
+        /** RepeatedTextResponse msg */
+        msg?: (string[]|null);
+
+        /** RepeatedTextResponse header */
+        header?: (string|null);
+
+        /** RepeatedTextResponse textList */
+        textList?: (dhl.ITextListItem[]|null);
+
+        /** RepeatedTextResponse useCoreference */
+        useCoreference?: (boolean|null);
+    }
+
+    /** Represents a RepeatedTextResponse. */
+    class RepeatedTextResponse implements IRepeatedTextResponse {
+
+        /**
+         * Constructs a new RepeatedTextResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: dhl.IRepeatedTextResponse);
+
+        /** RepeatedTextResponse msg. */
+        public msg: string[];
+
+        /** RepeatedTextResponse header. */
+        public header: string;
+
+        /** RepeatedTextResponse textList. */
+        public textList: dhl.ITextListItem[];
+
+        /** RepeatedTextResponse useCoreference. */
+        public useCoreference: boolean;
+
+        /**
+         * Creates a new RepeatedTextResponse instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns RepeatedTextResponse instance
+         */
+        public static create(properties?: dhl.IRepeatedTextResponse): dhl.RepeatedTextResponse;
+
+        /**
+         * Encodes the specified RepeatedTextResponse message. Does not implicitly {@link dhl.RepeatedTextResponse.verify|verify} messages.
+         * @param message RepeatedTextResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: dhl.IRepeatedTextResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified RepeatedTextResponse message, length delimited. Does not implicitly {@link dhl.RepeatedTextResponse.verify|verify} messages.
+         * @param message RepeatedTextResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: dhl.IRepeatedTextResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a RepeatedTextResponse message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns RepeatedTextResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.RepeatedTextResponse;
+
+        /**
+         * Decodes a RepeatedTextResponse message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns RepeatedTextResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.RepeatedTextResponse;
+
+        /**
+         * Verifies a RepeatedTextResponse message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a RepeatedTextResponse message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns RepeatedTextResponse
+         */
+        public static fromObject(object: { [k: string]: any }): dhl.RepeatedTextResponse;
+
+        /**
+         * Creates a plain object from a RepeatedTextResponse message. Also converts values to other types if specified.
+         * @param message RepeatedTextResponse
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: dhl.RepeatedTextResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this RepeatedTextResponse to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
+    /** Properties of a ChatMessage. */
+    interface IChatMessage {
+
+        /** ChatMessage textMsg */
+        textMsg?: (string|null);
+
+        /** ChatMessage cardMsg */
+        cardMsg?: (dhl.IDHLCardResponse|null);
+
+        /** ChatMessage imageResponseUrl */
+        imageResponseUrl?: (string|null);
+
+        /** ChatMessage textListMsg */
+        textListMsg?: (dhl.IRepeatedTextResponse|null);
+
+        /** ChatMessage cardListMsg */
+        cardListMsg?: (dhl.IRepeatedCardResponse|null);
+    }
+
+    /** Represents a ChatMessage. */
+    class ChatMessage implements IChatMessage {
+
+        /**
+         * Constructs a new ChatMessage.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: dhl.IChatMessage);
+
+        /** ChatMessage textMsg. */
+        public textMsg: string;
+
+        /** ChatMessage cardMsg. */
+        public cardMsg?: (dhl.IDHLCardResponse|null);
+
+        /** ChatMessage imageResponseUrl. */
+        public imageResponseUrl: string;
+
+        /** ChatMessage textListMsg. */
+        public textListMsg?: (dhl.IRepeatedTextResponse|null);
+
+        /** ChatMessage cardListMsg. */
+        public cardListMsg?: (dhl.IRepeatedCardResponse|null);
+
+        /** ChatMessage chatMessage. */
+        public chatMessage?: ("textMsg"|"cardMsg"|"imageResponseUrl"|"textListMsg"|"cardListMsg");
+
+        /**
+         * Creates a new ChatMessage instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns ChatMessage instance
+         */
+        public static create(properties?: dhl.IChatMessage): dhl.ChatMessage;
+
+        /**
+         * Encodes the specified ChatMessage message. Does not implicitly {@link dhl.ChatMessage.verify|verify} messages.
+         * @param message ChatMessage message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: dhl.IChatMessage, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified ChatMessage message, length delimited. Does not implicitly {@link dhl.ChatMessage.verify|verify} messages.
+         * @param message ChatMessage message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: dhl.IChatMessage, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a ChatMessage message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns ChatMessage
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.ChatMessage;
+
+        /**
+         * Decodes a ChatMessage message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns ChatMessage
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.ChatMessage;
+
+        /**
+         * Verifies a ChatMessage message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a ChatMessage message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns ChatMessage
+         */
+        public static fromObject(object: { [k: string]: any }): dhl.ChatMessage;
+
+        /**
+         * Creates a plain object from a ChatMessage message. Also converts values to other types if specified.
+         * @param message ChatMessage
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: dhl.ChatMessage, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this ChatMessage to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
+    /** Properties of a DHLChatResponse. */
+    interface IDHLChatResponse {
+
+        /** DHLChatResponse msgs */
+        msgs?: (dhl.IChatMessage[]|null);
+
+        /** DHLChatResponse candidates */
+        candidates?: (string[]|null);
+    }
+
+    /** Represents a DHLChatResponse. */
+    class DHLChatResponse implements IDHLChatResponse {
+
+        /**
+         * Constructs a new DHLChatResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: dhl.IDHLChatResponse);
+
+        /** DHLChatResponse msgs. */
+        public msgs: dhl.IChatMessage[];
+
+        /** DHLChatResponse candidates. */
+        public candidates: string[];
+
+        /**
+         * Creates a new DHLChatResponse instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns DHLChatResponse instance
+         */
+        public static create(properties?: dhl.IDHLChatResponse): dhl.DHLChatResponse;
+
+        /**
+         * Encodes the specified DHLChatResponse message. Does not implicitly {@link dhl.DHLChatResponse.verify|verify} messages.
+         * @param message DHLChatResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: dhl.IDHLChatResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified DHLChatResponse message, length delimited. Does not implicitly {@link dhl.DHLChatResponse.verify|verify} messages.
+         * @param message DHLChatResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: dhl.IDHLChatResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a DHLChatResponse message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns DHLChatResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.DHLChatResponse;
+
+        /**
+         * Decodes a DHLChatResponse message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns DHLChatResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.DHLChatResponse;
+
+        /**
+         * Verifies a DHLChatResponse message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a DHLChatResponse message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns DHLChatResponse
+         */
+        public static fromObject(object: { [k: string]: any }): dhl.DHLChatResponse;
+
+        /**
+         * Creates a plain object from a DHLChatResponse message. Also converts values to other types if specified.
+         * @param message DHLChatResponse
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: dhl.DHLChatResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this DHLChatResponse to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
+    /** Properties of a SuggestedValues. */
+    interface ISuggestedValues {
+
+        /** SuggestedValues text */
+        text?: (string|null);
+    }
+
+    /** Represents a SuggestedValues. */
+    class SuggestedValues implements ISuggestedValues {
+
+        /**
+         * Constructs a new SuggestedValues.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: dhl.ISuggestedValues);
+
+        /** SuggestedValues text. */
+        public text: string;
+
+        /** SuggestedValues value. */
+        public value?: "text";
+
+        /**
+         * Creates a new SuggestedValues instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns SuggestedValues instance
+         */
+        public static create(properties?: dhl.ISuggestedValues): dhl.SuggestedValues;
+
+        /**
+         * Encodes the specified SuggestedValues message. Does not implicitly {@link dhl.SuggestedValues.verify|verify} messages.
+         * @param message SuggestedValues message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: dhl.ISuggestedValues, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified SuggestedValues message, length delimited. Does not implicitly {@link dhl.SuggestedValues.verify|verify} messages.
+         * @param message SuggestedValues message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: dhl.ISuggestedValues, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a SuggestedValues message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns SuggestedValues
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.SuggestedValues;
+
+        /**
+         * Decodes a SuggestedValues message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns SuggestedValues
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.SuggestedValues;
+
+        /**
+         * Verifies a SuggestedValues message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a SuggestedValues message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns SuggestedValues
+         */
+        public static fromObject(object: { [k: string]: any }): dhl.SuggestedValues;
+
+        /**
+         * Creates a plain object from a SuggestedValues message. Also converts values to other types if specified.
+         * @param message SuggestedValues
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: dhl.SuggestedValues, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this SuggestedValues to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
+    /** Properties of a DHLScript. */
+    interface IDHLScript {
+
+        /** DHLScript script */
+        script?: (dhl.IScript|null);
+
+        /** DHLScript candidates */
+        candidates?: (string[]|null);
+
+        /** DHLScript modifiedQuery */
+        modifiedQuery?: (string|null);
+
+        /** DHLScript message */
+        message?: (string|null);
+
+        /** DHLScript agentResponse */
+        agentResponse?: (dhl.IDHLAgentResponse|null);
+
+        /** DHLScript chatResponse */
+        chatResponse?: (dhl.IDHLChatResponse|null);
+
+        /** DHLScript suggestedValues */
+        suggestedValues?: (dhl.ISuggestedValues[]|null);
+    }
+
+    /** Represents a DHLScript. */
+    class DHLScript implements IDHLScript {
+
+        /**
+         * Constructs a new DHLScript.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: dhl.IDHLScript);
+
+        /** DHLScript script. */
+        public script?: (dhl.IScript|null);
+
+        /** DHLScript candidates. */
+        public candidates: string[];
+
+        /** DHLScript modifiedQuery. */
+        public modifiedQuery: string;
+
+        /** DHLScript message. */
+        public message: string;
+
+        /** DHLScript agentResponse. */
+        public agentResponse?: (dhl.IDHLAgentResponse|null);
+
+        /** DHLScript chatResponse. */
+        public chatResponse?: (dhl.IDHLChatResponse|null);
+
+        /** DHLScript suggestedValues. */
+        public suggestedValues: dhl.ISuggestedValues[];
+
+        /** DHLScript dhlResponse. */
+        public dhlResponse?: ("agentResponse"|"chatResponse");
+
+        /**
+         * Creates a new DHLScript instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns DHLScript instance
+         */
+        public static create(properties?: dhl.IDHLScript): dhl.DHLScript;
+
+        /**
+         * Encodes the specified DHLScript message. Does not implicitly {@link dhl.DHLScript.verify|verify} messages.
+         * @param message DHLScript message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: dhl.IDHLScript, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified DHLScript message, length delimited. Does not implicitly {@link dhl.DHLScript.verify|verify} messages.
+         * @param message DHLScript message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: dhl.IDHLScript, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a DHLScript message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns DHLScript
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.DHLScript;
+
+        /**
+         * Decodes a DHLScript message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns DHLScript
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.DHLScript;
+
+        /**
+         * Verifies a DHLScript message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a DHLScript message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns DHLScript
+         */
+        public static fromObject(object: { [k: string]: any }): dhl.DHLScript;
+
+        /**
+         * Creates a plain object from a DHLScript message. Also converts values to other types if specified.
+         * @param message DHLScript
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: dhl.DHLScript, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this DHLScript to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
+    /** Properties of a DynamicEntityValue. */
+    interface IDynamicEntityValue {
+
+        /** DynamicEntityValue keyword */
+        keyword?: (string|null);
+
+        /** DynamicEntityValue aliases */
+        aliases?: (string[]|null);
+    }
+
+    /** Represents a DynamicEntityValue. */
+    class DynamicEntityValue implements IDynamicEntityValue {
+
+        /**
+         * Constructs a new DynamicEntityValue.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: dhl.IDynamicEntityValue);
+
+        /** DynamicEntityValue keyword. */
+        public keyword: string;
+
+        /** DynamicEntityValue aliases. */
+        public aliases: string[];
+
+        /**
+         * Creates a new DynamicEntityValue instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns DynamicEntityValue instance
+         */
+        public static create(properties?: dhl.IDynamicEntityValue): dhl.DynamicEntityValue;
+
+        /**
+         * Encodes the specified DynamicEntityValue message. Does not implicitly {@link dhl.DynamicEntityValue.verify|verify} messages.
+         * @param message DynamicEntityValue message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: dhl.IDynamicEntityValue, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified DynamicEntityValue message, length delimited. Does not implicitly {@link dhl.DynamicEntityValue.verify|verify} messages.
+         * @param message DynamicEntityValue message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: dhl.IDynamicEntityValue, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a DynamicEntityValue message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns DynamicEntityValue
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.DynamicEntityValue;
+
+        /**
+         * Decodes a DynamicEntityValue message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns DynamicEntityValue
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.DynamicEntityValue;
+
+        /**
+         * Verifies a DynamicEntityValue message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a DynamicEntityValue message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns DynamicEntityValue
+         */
+        public static fromObject(object: { [k: string]: any }): dhl.DynamicEntityValue;
+
+        /**
+         * Creates a plain object from a DynamicEntityValue message. Also converts values to other types if specified.
+         * @param message DynamicEntityValue
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: dhl.DynamicEntityValue, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this DynamicEntityValue to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
+    /** Properties of a DynamicEntity. */
+    interface IDynamicEntity {
+
+        /** DynamicEntity typeName */
+        typeName?: (string|null);
+
+        /** DynamicEntity values */
+        values?: (dhl.IDynamicEntityValue[]|null);
+    }
+
+    /** Represents a DynamicEntity. */
+    class DynamicEntity implements IDynamicEntity {
+
+        /**
+         * Constructs a new DynamicEntity.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: dhl.IDynamicEntity);
+
+        /** DynamicEntity typeName. */
+        public typeName: string;
+
+        /** DynamicEntity values. */
+        public values: dhl.IDynamicEntityValue[];
+
+        /**
+         * Creates a new DynamicEntity instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns DynamicEntity instance
+         */
+        public static create(properties?: dhl.IDynamicEntity): dhl.DynamicEntity;
+
+        /**
+         * Encodes the specified DynamicEntity message. Does not implicitly {@link dhl.DynamicEntity.verify|verify} messages.
+         * @param message DynamicEntity message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: dhl.IDynamicEntity, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified DynamicEntity message, length delimited. Does not implicitly {@link dhl.DynamicEntity.verify|verify} messages.
+         * @param message DynamicEntity message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: dhl.IDynamicEntity, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a DynamicEntity message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns DynamicEntity
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.DynamicEntity;
+
+        /**
+         * Decodes a DynamicEntity message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns DynamicEntity
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.DynamicEntity;
+
+        /**
+         * Verifies a DynamicEntity message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a DynamicEntity message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns DynamicEntity
+         */
+        public static fromObject(object: { [k: string]: any }): dhl.DynamicEntity;
+
+        /**
+         * Creates a plain object from a DynamicEntity message. Also converts values to other types if specified.
+         * @param message DynamicEntity
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: dhl.DynamicEntity, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this DynamicEntity to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
+    /** Properties of a FilledAttribute. */
+    interface IFilledAttribute {
+
+        /** FilledAttribute name */
+        name?: (string|null);
+
+        /** FilledAttribute value */
+        value?: (string|null);
+
+        /** FilledAttribute timestamp */
+        timestamp?: (number|Long|null);
+    }
+
+    /** Represents a FilledAttribute. */
+    class FilledAttribute implements IFilledAttribute {
+
+        /**
+         * Constructs a new FilledAttribute.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: dhl.IFilledAttribute);
+
+        /** FilledAttribute name. */
+        public name: string;
+
+        /** FilledAttribute value. */
+        public value: string;
+
+        /** FilledAttribute timestamp. */
+        public timestamp: (number|Long);
+
+        /**
+         * Creates a new FilledAttribute instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns FilledAttribute instance
+         */
+        public static create(properties?: dhl.IFilledAttribute): dhl.FilledAttribute;
+
+        /**
+         * Encodes the specified FilledAttribute message. Does not implicitly {@link dhl.FilledAttribute.verify|verify} messages.
+         * @param message FilledAttribute message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: dhl.IFilledAttribute, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified FilledAttribute message, length delimited. Does not implicitly {@link dhl.FilledAttribute.verify|verify} messages.
+         * @param message FilledAttribute message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: dhl.IFilledAttribute, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a FilledAttribute message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns FilledAttribute
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.FilledAttribute;
+
+        /**
+         * Decodes a FilledAttribute message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns FilledAttribute
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.FilledAttribute;
+
+        /**
+         * Verifies a FilledAttribute message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a FilledAttribute message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns FilledAttribute
+         */
+        public static fromObject(object: { [k: string]: any }): dhl.FilledAttribute;
+
+        /**
+         * Creates a plain object from a FilledAttribute message. Also converts values to other types if specified.
+         * @param message FilledAttribute
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: dhl.FilledAttribute, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this FilledAttribute to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+}
+
 /** Namespace dhlmixer. */
 export namespace dhlmixer {
 
@@ -1642,6 +3147,15 @@ export namespace dhlmixer {
 
         /** DHLMixerRequestData dynamicEntities */
         dynamicEntities?: (dhl.IDynamicEntity[]|null);
+
+        /** DHLMixerRequestData globalAttributes */
+        globalAttributes?: (dhl.IFilledAttribute[]|null);
+
+        /** DHLMixerRequestData intentName */
+        intentName?: (string|null);
+
+        /** DHLMixerRequestData localAttributes */
+        localAttributes?: (dhl.IFilledAttribute[]|null);
     }
 
     /** Represents a DHLMixerRequestData. */
@@ -1676,6 +3190,15 @@ export namespace dhlmixer {
 
         /** DHLMixerRequestData dynamicEntities. */
         public dynamicEntities: dhl.IDynamicEntity[];
+
+        /** DHLMixerRequestData globalAttributes. */
+        public globalAttributes: dhl.IFilledAttribute[];
+
+        /** DHLMixerRequestData intentName. */
+        public intentName: string;
+
+        /** DHLMixerRequestData localAttributes. */
+        public localAttributes: dhl.IFilledAttribute[];
 
         /**
          * Creates a new DHLMixerRequestData instance using the specified properties.
@@ -2149,6 +3672,9 @@ export namespace dhlmixer {
 
         /** KerfuMessageAck messageId */
         messageId?: (number|Long|null);
+
+        /** KerfuMessageAck timestamp */
+        timestamp?: (number|Long|null);
     }
 
     /** Represents a KerfuMessageAck. */
@@ -2165,6 +3691,9 @@ export namespace dhlmixer {
 
         /** KerfuMessageAck messageId. */
         public messageId: (number|Long);
+
+        /** KerfuMessageAck timestamp. */
+        public timestamp: (number|Long);
 
         /**
          * Creates a new KerfuMessageAck instance using the specified properties.
@@ -3378,1064 +4907,6 @@ export namespace dhlmixer {
 
         /**
          * Converts this AccessToken to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-    }
-}
-
-/** Namespace dhl. */
-export namespace dhl {
-
-    /** DHLRequestType enum. */
-    enum DHLRequestType {
-        Normal = 0,
-        AgentList = 1,
-        WelcomeMessage = 2
-    }
-
-    /** Properties of a DHLAgentInfo. */
-    interface IDHLAgentInfo {
-
-        /** DHLAgentInfo id */
-        id?: (string|null);
-
-        /** DHLAgentInfo name */
-        name?: (string|null);
-
-        /** DHLAgentInfo org */
-        org?: (string|null);
-
-        /** DHLAgentInfo description */
-        description?: (string|null);
-
-        /** DHLAgentInfo iconUrl */
-        iconUrl?: (string|null);
-
-        /** DHLAgentInfo type */
-        type?: (string|null);
-    }
-
-    /** Represents a DHLAgentInfo. */
-    class DHLAgentInfo implements IDHLAgentInfo {
-
-        /**
-         * Constructs a new DHLAgentInfo.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: dhl.IDHLAgentInfo);
-
-        /** DHLAgentInfo id. */
-        public id: string;
-
-        /** DHLAgentInfo name. */
-        public name: string;
-
-        /** DHLAgentInfo org. */
-        public org: string;
-
-        /** DHLAgentInfo description. */
-        public description: string;
-
-        /** DHLAgentInfo iconUrl. */
-        public iconUrl: string;
-
-        /** DHLAgentInfo type. */
-        public type: string;
-
-        /**
-         * Creates a new DHLAgentInfo instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns DHLAgentInfo instance
-         */
-        public static create(properties?: dhl.IDHLAgentInfo): dhl.DHLAgentInfo;
-
-        /**
-         * Encodes the specified DHLAgentInfo message. Does not implicitly {@link dhl.DHLAgentInfo.verify|verify} messages.
-         * @param message DHLAgentInfo message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: dhl.IDHLAgentInfo, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified DHLAgentInfo message, length delimited. Does not implicitly {@link dhl.DHLAgentInfo.verify|verify} messages.
-         * @param message DHLAgentInfo message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: dhl.IDHLAgentInfo, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a DHLAgentInfo message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns DHLAgentInfo
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.DHLAgentInfo;
-
-        /**
-         * Decodes a DHLAgentInfo message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns DHLAgentInfo
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.DHLAgentInfo;
-
-        /**
-         * Verifies a DHLAgentInfo message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a DHLAgentInfo message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns DHLAgentInfo
-         */
-        public static fromObject(object: { [k: string]: any }): dhl.DHLAgentInfo;
-
-        /**
-         * Creates a plain object from a DHLAgentInfo message. Also converts values to other types if specified.
-         * @param message DHLAgentInfo
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: dhl.DHLAgentInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this DHLAgentInfo to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-    }
-
-    /** Properties of a DHLAgentResponse. */
-    interface IDHLAgentResponse {
-
-        /** DHLAgentResponse agentList */
-        agentList?: (dhl.IDHLAgentInfo[]|null);
-    }
-
-    /** Represents a DHLAgentResponse. */
-    class DHLAgentResponse implements IDHLAgentResponse {
-
-        /**
-         * Constructs a new DHLAgentResponse.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: dhl.IDHLAgentResponse);
-
-        /** DHLAgentResponse agentList. */
-        public agentList: dhl.IDHLAgentInfo[];
-
-        /**
-         * Creates a new DHLAgentResponse instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns DHLAgentResponse instance
-         */
-        public static create(properties?: dhl.IDHLAgentResponse): dhl.DHLAgentResponse;
-
-        /**
-         * Encodes the specified DHLAgentResponse message. Does not implicitly {@link dhl.DHLAgentResponse.verify|verify} messages.
-         * @param message DHLAgentResponse message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: dhl.IDHLAgentResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified DHLAgentResponse message, length delimited. Does not implicitly {@link dhl.DHLAgentResponse.verify|verify} messages.
-         * @param message DHLAgentResponse message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: dhl.IDHLAgentResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a DHLAgentResponse message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns DHLAgentResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.DHLAgentResponse;
-
-        /**
-         * Decodes a DHLAgentResponse message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns DHLAgentResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.DHLAgentResponse;
-
-        /**
-         * Verifies a DHLAgentResponse message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a DHLAgentResponse message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns DHLAgentResponse
-         */
-        public static fromObject(object: { [k: string]: any }): dhl.DHLAgentResponse;
-
-        /**
-         * Creates a plain object from a DHLAgentResponse message. Also converts values to other types if specified.
-         * @param message DHLAgentResponse
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: dhl.DHLAgentResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this DHLAgentResponse to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-    }
-
-    /** Properties of a Script. */
-    interface IScript {
-
-        /** Script textResponse */
-        textResponse?: (string|null);
-
-        /** Script cardResponse */
-        cardResponse?: (dhl.ICardResponse|null);
-
-        /** Script agentResponse */
-        agentResponse?: (dhl.IDHLAgentResponse|null);
-    }
-
-    /** Represents a Script. */
-    class Script implements IScript {
-
-        /**
-         * Constructs a new Script.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: dhl.IScript);
-
-        /** Script textResponse. */
-        public textResponse: string;
-
-        /** Script cardResponse. */
-        public cardResponse?: (dhl.ICardResponse|null);
-
-        /** Script agentResponse. */
-        public agentResponse?: (dhl.IDHLAgentResponse|null);
-
-        /** Script scriptData. */
-        public scriptData?: ("textResponse"|"cardResponse"|"agentResponse");
-
-        /**
-         * Creates a new Script instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns Script instance
-         */
-        public static create(properties?: dhl.IScript): dhl.Script;
-
-        /**
-         * Encodes the specified Script message. Does not implicitly {@link dhl.Script.verify|verify} messages.
-         * @param message Script message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: dhl.IScript, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified Script message, length delimited. Does not implicitly {@link dhl.Script.verify|verify} messages.
-         * @param message Script message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: dhl.IScript, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a Script message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns Script
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.Script;
-
-        /**
-         * Decodes a Script message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns Script
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.Script;
-
-        /**
-         * Verifies a Script message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a Script message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns Script
-         */
-        public static fromObject(object: { [k: string]: any }): dhl.Script;
-
-        /**
-         * Creates a plain object from a Script message. Also converts values to other types if specified.
-         * @param message Script
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: dhl.Script, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this Script to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-    }
-
-    /** Properties of a ChatMessage. */
-    interface IChatMessage {
-
-        /** ChatMessage textMsg */
-        textMsg?: (string|null);
-
-        /** ChatMessage cardMsg */
-        cardMsg?: (dhl.ICardResponse|null);
-
-        /** ChatMessage imageResponseUrl */
-        imageResponseUrl?: (string|null);
-    }
-
-    /** Represents a ChatMessage. */
-    class ChatMessage implements IChatMessage {
-
-        /**
-         * Constructs a new ChatMessage.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: dhl.IChatMessage);
-
-        /** ChatMessage textMsg. */
-        public textMsg: string;
-
-        /** ChatMessage cardMsg. */
-        public cardMsg?: (dhl.ICardResponse|null);
-
-        /** ChatMessage imageResponseUrl. */
-        public imageResponseUrl: string;
-
-        /** ChatMessage chatMessage. */
-        public chatMessage?: ("textMsg"|"cardMsg"|"imageResponseUrl");
-
-        /**
-         * Creates a new ChatMessage instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns ChatMessage instance
-         */
-        public static create(properties?: dhl.IChatMessage): dhl.ChatMessage;
-
-        /**
-         * Encodes the specified ChatMessage message. Does not implicitly {@link dhl.ChatMessage.verify|verify} messages.
-         * @param message ChatMessage message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: dhl.IChatMessage, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified ChatMessage message, length delimited. Does not implicitly {@link dhl.ChatMessage.verify|verify} messages.
-         * @param message ChatMessage message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: dhl.IChatMessage, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a ChatMessage message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns ChatMessage
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.ChatMessage;
-
-        /**
-         * Decodes a ChatMessage message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns ChatMessage
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.ChatMessage;
-
-        /**
-         * Verifies a ChatMessage message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a ChatMessage message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns ChatMessage
-         */
-        public static fromObject(object: { [k: string]: any }): dhl.ChatMessage;
-
-        /**
-         * Creates a plain object from a ChatMessage message. Also converts values to other types if specified.
-         * @param message ChatMessage
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: dhl.ChatMessage, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this ChatMessage to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-    }
-
-    /** Properties of a DHLChatResponse. */
-    interface IDHLChatResponse {
-
-        /** DHLChatResponse msgs */
-        msgs?: (dhl.IChatMessage[]|null);
-
-        /** DHLChatResponse candidates */
-        candidates?: (string[]|null);
-    }
-
-    /** Represents a DHLChatResponse. */
-    class DHLChatResponse implements IDHLChatResponse {
-
-        /**
-         * Constructs a new DHLChatResponse.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: dhl.IDHLChatResponse);
-
-        /** DHLChatResponse msgs. */
-        public msgs: dhl.IChatMessage[];
-
-        /** DHLChatResponse candidates. */
-        public candidates: string[];
-
-        /**
-         * Creates a new DHLChatResponse instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns DHLChatResponse instance
-         */
-        public static create(properties?: dhl.IDHLChatResponse): dhl.DHLChatResponse;
-
-        /**
-         * Encodes the specified DHLChatResponse message. Does not implicitly {@link dhl.DHLChatResponse.verify|verify} messages.
-         * @param message DHLChatResponse message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: dhl.IDHLChatResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified DHLChatResponse message, length delimited. Does not implicitly {@link dhl.DHLChatResponse.verify|verify} messages.
-         * @param message DHLChatResponse message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: dhl.IDHLChatResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a DHLChatResponse message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns DHLChatResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.DHLChatResponse;
-
-        /**
-         * Decodes a DHLChatResponse message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns DHLChatResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.DHLChatResponse;
-
-        /**
-         * Verifies a DHLChatResponse message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a DHLChatResponse message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns DHLChatResponse
-         */
-        public static fromObject(object: { [k: string]: any }): dhl.DHLChatResponse;
-
-        /**
-         * Creates a plain object from a DHLChatResponse message. Also converts values to other types if specified.
-         * @param message DHLChatResponse
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: dhl.DHLChatResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this DHLChatResponse to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-    }
-
-    /** Properties of a DHLScript. */
-    interface IDHLScript {
-
-        /** DHLScript script */
-        script?: (dhl.IScript|null);
-
-        /** DHLScript candidates */
-        candidates?: (string[]|null);
-
-        /** DHLScript modifiedQuery */
-        modifiedQuery?: (string|null);
-
-        /** DHLScript message */
-        message?: (string|null);
-
-        /** DHLScript agentResponse */
-        agentResponse?: (dhl.IDHLAgentResponse|null);
-
-        /** DHLScript chatResponse */
-        chatResponse?: (dhl.IDHLChatResponse|null);
-    }
-
-    /** Represents a DHLScript. */
-    class DHLScript implements IDHLScript {
-
-        /**
-         * Constructs a new DHLScript.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: dhl.IDHLScript);
-
-        /** DHLScript script. */
-        public script?: (dhl.IScript|null);
-
-        /** DHLScript candidates. */
-        public candidates: string[];
-
-        /** DHLScript modifiedQuery. */
-        public modifiedQuery: string;
-
-        /** DHLScript message. */
-        public message: string;
-
-        /** DHLScript agentResponse. */
-        public agentResponse?: (dhl.IDHLAgentResponse|null);
-
-        /** DHLScript chatResponse. */
-        public chatResponse?: (dhl.IDHLChatResponse|null);
-
-        /** DHLScript dhlResponse. */
-        public dhlResponse?: ("agentResponse"|"chatResponse");
-
-        /**
-         * Creates a new DHLScript instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns DHLScript instance
-         */
-        public static create(properties?: dhl.IDHLScript): dhl.DHLScript;
-
-        /**
-         * Encodes the specified DHLScript message. Does not implicitly {@link dhl.DHLScript.verify|verify} messages.
-         * @param message DHLScript message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: dhl.IDHLScript, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified DHLScript message, length delimited. Does not implicitly {@link dhl.DHLScript.verify|verify} messages.
-         * @param message DHLScript message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: dhl.IDHLScript, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a DHLScript message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns DHLScript
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.DHLScript;
-
-        /**
-         * Decodes a DHLScript message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns DHLScript
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.DHLScript;
-
-        /**
-         * Verifies a DHLScript message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a DHLScript message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns DHLScript
-         */
-        public static fromObject(object: { [k: string]: any }): dhl.DHLScript;
-
-        /**
-         * Creates a plain object from a DHLScript message. Also converts values to other types if specified.
-         * @param message DHLScript
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: dhl.DHLScript, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this DHLScript to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-    }
-
-    /** Properties of a TextResponse. */
-    interface ITextResponse {
-
-        /** TextResponse contents */
-        contents?: (string[]|null);
-    }
-
-    /** Represents a TextResponse. */
-    class TextResponse implements ITextResponse {
-
-        /**
-         * Constructs a new TextResponse.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: dhl.ITextResponse);
-
-        /** TextResponse contents. */
-        public contents: string[];
-
-        /**
-         * Creates a new TextResponse instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns TextResponse instance
-         */
-        public static create(properties?: dhl.ITextResponse): dhl.TextResponse;
-
-        /**
-         * Encodes the specified TextResponse message. Does not implicitly {@link dhl.TextResponse.verify|verify} messages.
-         * @param message TextResponse message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: dhl.ITextResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified TextResponse message, length delimited. Does not implicitly {@link dhl.TextResponse.verify|verify} messages.
-         * @param message TextResponse message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: dhl.ITextResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a TextResponse message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns TextResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.TextResponse;
-
-        /**
-         * Decodes a TextResponse message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns TextResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.TextResponse;
-
-        /**
-         * Verifies a TextResponse message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a TextResponse message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns TextResponse
-         */
-        public static fromObject(object: { [k: string]: any }): dhl.TextResponse;
-
-        /**
-         * Creates a plain object from a TextResponse message. Also converts values to other types if specified.
-         * @param message TextResponse
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: dhl.TextResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this TextResponse to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-    }
-
-    /** Properties of a CardResponse. */
-    interface ICardResponse {
-
-        /** CardResponse title */
-        title?: (string|null);
-
-        /** CardResponse description */
-        description?: (string|null);
-
-        /** CardResponse imageUrl */
-        imageUrl?: (string|null);
-
-        /** CardResponse deepLink */
-        deepLink?: (string|null);
-
-        /** CardResponse script */
-        script?: (string|null);
-
-        /** CardResponse preCardText */
-        preCardText?: (string|null);
-
-        /** CardResponse postCardText */
-        postCardText?: (string|null);
-    }
-
-    /** Represents a CardResponse. */
-    class CardResponse implements ICardResponse {
-
-        /**
-         * Constructs a new CardResponse.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: dhl.ICardResponse);
-
-        /** CardResponse title. */
-        public title: string;
-
-        /** CardResponse description. */
-        public description: string;
-
-        /** CardResponse imageUrl. */
-        public imageUrl: string;
-
-        /** CardResponse deepLink. */
-        public deepLink: string;
-
-        /** CardResponse script. */
-        public script: string;
-
-        /** CardResponse preCardText. */
-        public preCardText: string;
-
-        /** CardResponse postCardText. */
-        public postCardText: string;
-
-        /**
-         * Creates a new CardResponse instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns CardResponse instance
-         */
-        public static create(properties?: dhl.ICardResponse): dhl.CardResponse;
-
-        /**
-         * Encodes the specified CardResponse message. Does not implicitly {@link dhl.CardResponse.verify|verify} messages.
-         * @param message CardResponse message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: dhl.ICardResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified CardResponse message, length delimited. Does not implicitly {@link dhl.CardResponse.verify|verify} messages.
-         * @param message CardResponse message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: dhl.ICardResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a CardResponse message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns CardResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.CardResponse;
-
-        /**
-         * Decodes a CardResponse message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns CardResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.CardResponse;
-
-        /**
-         * Verifies a CardResponse message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a CardResponse message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns CardResponse
-         */
-        public static fromObject(object: { [k: string]: any }): dhl.CardResponse;
-
-        /**
-         * Creates a plain object from a CardResponse message. Also converts values to other types if specified.
-         * @param message CardResponse
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: dhl.CardResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this CardResponse to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-    }
-
-    /** Properties of a DynamicEntityValue. */
-    interface IDynamicEntityValue {
-
-        /** DynamicEntityValue keyword */
-        keyword?: (string|null);
-
-        /** DynamicEntityValue aliases */
-        aliases?: (string[]|null);
-    }
-
-    /** Represents a DynamicEntityValue. */
-    class DynamicEntityValue implements IDynamicEntityValue {
-
-        /**
-         * Constructs a new DynamicEntityValue.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: dhl.IDynamicEntityValue);
-
-        /** DynamicEntityValue keyword. */
-        public keyword: string;
-
-        /** DynamicEntityValue aliases. */
-        public aliases: string[];
-
-        /**
-         * Creates a new DynamicEntityValue instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns DynamicEntityValue instance
-         */
-        public static create(properties?: dhl.IDynamicEntityValue): dhl.DynamicEntityValue;
-
-        /**
-         * Encodes the specified DynamicEntityValue message. Does not implicitly {@link dhl.DynamicEntityValue.verify|verify} messages.
-         * @param message DynamicEntityValue message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: dhl.IDynamicEntityValue, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified DynamicEntityValue message, length delimited. Does not implicitly {@link dhl.DynamicEntityValue.verify|verify} messages.
-         * @param message DynamicEntityValue message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: dhl.IDynamicEntityValue, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a DynamicEntityValue message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns DynamicEntityValue
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.DynamicEntityValue;
-
-        /**
-         * Decodes a DynamicEntityValue message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns DynamicEntityValue
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.DynamicEntityValue;
-
-        /**
-         * Verifies a DynamicEntityValue message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a DynamicEntityValue message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns DynamicEntityValue
-         */
-        public static fromObject(object: { [k: string]: any }): dhl.DynamicEntityValue;
-
-        /**
-         * Creates a plain object from a DynamicEntityValue message. Also converts values to other types if specified.
-         * @param message DynamicEntityValue
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: dhl.DynamicEntityValue, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this DynamicEntityValue to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-    }
-
-    /** Properties of a DynamicEntity. */
-    interface IDynamicEntity {
-
-        /** DynamicEntity typeName */
-        typeName?: (string|null);
-
-        /** DynamicEntity values */
-        values?: (dhl.IDynamicEntityValue[]|null);
-    }
-
-    /** Represents a DynamicEntity. */
-    class DynamicEntity implements IDynamicEntity {
-
-        /**
-         * Constructs a new DynamicEntity.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: dhl.IDynamicEntity);
-
-        /** DynamicEntity typeName. */
-        public typeName: string;
-
-        /** DynamicEntity values. */
-        public values: dhl.IDynamicEntityValue[];
-
-        /**
-         * Creates a new DynamicEntity instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns DynamicEntity instance
-         */
-        public static create(properties?: dhl.IDynamicEntity): dhl.DynamicEntity;
-
-        /**
-         * Encodes the specified DynamicEntity message. Does not implicitly {@link dhl.DynamicEntity.verify|verify} messages.
-         * @param message DynamicEntity message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: dhl.IDynamicEntity, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified DynamicEntity message, length delimited. Does not implicitly {@link dhl.DynamicEntity.verify|verify} messages.
-         * @param message DynamicEntity message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: dhl.IDynamicEntity, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a DynamicEntity message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns DynamicEntity
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): dhl.DynamicEntity;
-
-        /**
-         * Decodes a DynamicEntity message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns DynamicEntity
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): dhl.DynamicEntity;
-
-        /**
-         * Verifies a DynamicEntity message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a DynamicEntity message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns DynamicEntity
-         */
-        public static fromObject(object: { [k: string]: any }): dhl.DynamicEntity;
-
-        /**
-         * Creates a plain object from a DynamicEntity message. Also converts values to other types if specified.
-         * @param message DynamicEntity
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: dhl.DynamicEntity, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this DynamicEntity to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };

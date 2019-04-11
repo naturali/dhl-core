@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package dhl;
 
-import "dhl_response.proto";
-
 option go_package = "p";
 
 option java_multiple_files = true;
@@ -28,25 +26,64 @@ message DHLAgentResponse {
     repeated DHLAgentInfo agent_list = 1;
 }
 
+message DHLCardResponse {
+    string title = 1;
+    string description = 2;
+    string image_url = 3;
+    string deep_link = 4;
+    string script = 5;
+    string pre_card_text = 6;
+    string post_card_text = 7;
+    string coreference = 8;
+}
+
 message Script {
     oneof script_data {
         string text_response = 1;
-        CardResponse card_response = 2;
+        DHLCardResponse card_response = 2;
         DHLAgentResponse agent_response = 3;
     }
+}
+
+message RepeatedCardResponse {
+    string header = 1;
+    repeated DHLCardResponse card_msgs = 2;
+    bool use_coreference = 3;
+}
+
+message TextListItem {
+    string content1 = 1;
+    string content2 = 2;
+    string content3 = 3;
+    string coreference = 4;
+}
+
+message RepeatedTextResponse {
+    repeated string msg = 1; // deprecated
+    string header = 2;
+    repeated TextListItem text_list = 3;
+    bool use_coreference = 4;
 }
 
 message ChatMessage {
     oneof chat_message {
         string text_msg = 1;
-        CardResponse card_msg = 2;
+        DHLCardResponse card_msg = 2;
         string image_response_url = 3;
+        RepeatedTextResponse text_list_msg = 4;
+        RepeatedCardResponse card_list_msg = 5;
     }
 }
 
 message DHLChatResponse {
     repeated ChatMessage msgs = 1;
     repeated string candidates = 2; // should this be in ChatMessage instead?
+}
+
+message SuggestedValues {
+    oneof value {
+        string text = 1;
+    }
 }
 
 message DHLScript {
@@ -58,4 +95,5 @@ message DHLScript {
         DHLAgentResponse agent_response = 5;
         DHLChatResponse chat_response = 6;
     }
+    repeated SuggestedValues suggested_values = 7;
 }

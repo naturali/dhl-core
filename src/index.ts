@@ -192,7 +192,7 @@ export class DHL {
    * @memberof DHL
    */
   private getHistoryMessages(params: any, callback: (message: string, messageType: string, res: any) => void) {
-    axios.get(`${ restfulAddr }/v1/message_history`, {
+    axios.get(`${restfulAddr}/v1/message_history`, {
       params,
       headers: {
         Authorization: this.token
@@ -205,10 +205,10 @@ export class DHL {
       const response = dhlmixer.KerfuMessageList.decode(buffer).toJSON();
       const message = response && response.messages && response.messages[0];
       const responseMessages = (message &&
-          message.response &&
-          message.response.dhlScript &&
-          message.response.dhlScript.chatResponse &&
-          message.response.dhlScript.chatResponse.msgs) ||
+        message.response &&
+        message.response.dhlScript &&
+        message.response.dhlScript.chatResponse &&
+        message.response.dhlScript.chatResponse.msgs) ||
         [];
       const responseMessage = responseMessages.map((item: any) => item && item.textMsg)[0] || '';
       const messageType = message && message.response && message.response.messageContentType || 'text';
@@ -250,13 +250,13 @@ export class DHL {
           messageContentType,
           forceHandleManually,
           dhlRequestType: dhl.DHLRequestType.Normal,
-          reqId: `customer-request-${ dateTime }`
+          reqId: `customer-request-${dateTime}`
         })
       };
       const paramsMessage = MessageType.create(messageData);
       const buffer = MessageType.encode(paramsMessage).finish();
 
-      axios.post(`${ restfulAddr }/v1/kerfu_messages`, buffer, {
+      axios.post(`${restfulAddr}/v1/kerfu_messages`, buffer, {
         headers: {
           accept: 'application/protobuf',
           'content-type': 'application/protobuf',
@@ -296,7 +296,7 @@ export class DHL {
       const formData = new FormData();
 
       formData.append('image', file);
-      axios.post(`${ restfulAddr }/v1/resources`, formData, {
+      axios.post(`${restfulAddr}/v1/resources`, formData, {
         headers: {
           'content-type': 'multipart/form-data'
         }
