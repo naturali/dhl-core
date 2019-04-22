@@ -4,6 +4,10 @@ import { w3cwebsocket } from 'websocket';
 import { dhlmixer, dhl } from './../static/js/dhl';
 import { restfulAddr, websocketAddr } from './config';
 import { fieldValidate } from './util';
+import { UserInfo, UserType } from './user-info';
+import { analyzeKerfuResponse } from './response-analyze';
+import { MessageRequest, transferMessageRequest } from './message-request';
+import { MessageResult } from './message-result';
 
 export interface DHLAgentInfo {
   agentId: string;
@@ -14,11 +18,6 @@ export interface DHLAppInfo {
   appId: string;
   appKey: string;
   appSecret: string;
-}
-
-export interface DHLUserInfo {
-  userId: string;
-  userName: string;
 }
 
 export interface SendMessageParamsInfo {
@@ -33,9 +32,9 @@ export interface DHLConnectParams {
 }
 
 export class DHL {
-  private agent: DHLAgentInfo;
+  private agent: UserInfo;
   private app: DHLAppInfo;
-  private user: DHLUserInfo;
+  private user: UserInfo;
   private token: string;
   private client: any;
 
@@ -44,7 +43,7 @@ export class DHL {
    * @param {DHLAgentInfo} agent
    * @memberof DHL
    */
-  constructor(agent: DHLAgentInfo) {
+  constructor(agent: UserInfo) {
     fieldValidate(agent, ['agentId']);
     this.agent = { ...agent };
   }
@@ -109,7 +108,8 @@ export class DHL {
     if (userId) {
       this.user = {
         userId,
-        userName: userName || userId
+        userName: userName || userId,
+        type: UserType.USER
       };
     }
 
@@ -222,65 +222,45 @@ export class DHL {
   /**
    * send a message
    *
-   * @param {SendMessageParamsInfo} params
-   * @param {(message: string, messageType: string, res: any) => void} callback
+   * @param {MessageRequest} msgRequest
+   * @param {(msgResult: MessageResult[]) => void} onSuccess
+   * @param {(code: number, message: string) => void} onFailed
    * @memberof DHL
    */
-  send(params: SendMessageParamsInfo, callback: (message: string, messageType: string, res: any) => void) {
-    fieldValidate(params, ['message', 'messageContentType', 'forceHandleManually']);
+  send(msgRequest: MessageRequest, onSuccess?: (msgResult: MessageResult[]) => void, onFailed?: (code: number, message: string) => void) {
 
-    const { message, messageContentType, forceHandleManually } = params;
-    const dateTime = new Date().getTime();
+    console.log("send : ", msgRequest);
+    const buffer = transferMessageRequest(msgRequest);
+    axios.post(`${restfulAddr}/v1/kerfu_messages`, buffer, {
+      headers: {
+        accept: 'application/protobuf',
+        'content-type': 'application/protobuf',
+        Authorization: this.token
+      },
+      responseType: 'arraybuffer',
+      transformRequest: (reqData, headers) => reqData,
+      transformResponse: resData => resData
+    }).then((res: any) => {
+      const responseBuffer = res.data;
 
-    if (message) {
-      const MessageType = dhlmixer.KerfuMessage;
-      const messageData = {
-        appId: this.app.appId,
-        userId: this.user.userId,
-        agentId: this.agent.agentId,
-        agentName: this.agent.agentName,
-        messageId: 0,
-        sessionId: 0,
-        messageType: dhlmixer.KerfuMessageType.Request,
-        platformType: 'kerfu_web',
-        userName: this.user.userName || this.user.userId,
-        timestamp: dateTime,
-        request: dhlmixer.DHLMixerRequestData.create({
-          message,
-          messageContentType,
-          forceHandleManually,
-          dhlRequestType: dhl.DHLRequestType.Normal,
-          reqId: `customer-request-${dateTime}`
-        })
-      };
-      const paramsMessage = MessageType.create(messageData);
-      const buffer = MessageType.encode(paramsMessage).finish();
+      console.log("res 1: ", res);
+      if (res.status === 200 && responseBuffer) {
+        const resData = new Buffer(responseBuffer);
+        const kerfuResponse = dhlmixer.KerfuResponse.decode(resData);
+        console.log("res 2: ", kerfuResponse.toJSON);
 
-      axios.post(`${restfulAddr}/v1/kerfu_messages`, buffer, {
-        headers: {
-          accept: 'application/protobuf',
-          'content-type': 'application/protobuf',
-          Authorization: this.token
-        },
-        responseType: 'arraybuffer',
-        transformRequest: (reqData, headers) => reqData,
-        transformResponse: resData => resData
-      }).then((res: any) => {
-        const responseBuffer = res.data;
+        const msgResults = analyzeKerfuResponse(kerfuResponse);
 
-        if (res.status === 200 && responseBuffer) {
-          const resData = new Buffer(responseBuffer);
-          const responseData = dhlmixer.KerfuResponse.decode(resData).toJSON();
-          const defaultMessage = responseData.messages && responseData.messages[0];
-          const messageType = defaultMessage && defaultMessage.response && defaultMessage.response.messageContentType || 'text';
-          const responseMessages = defaultMessage && defaultMessage.response && defaultMessage.response.dhlScript && defaultMessage.response.dhlScript.chatResponse
-            && defaultMessage.response.dhlScript.chatResponse.msgs || [];
-          const messages = responseMessages.map((item: any) => item && item.textMsg);
-
-          callback(messages, messageType.toLowerCase(), res.data);
+        console.log('msgResult 3: ', msgResults);
+        if (onSuccess) {
+          onSuccess(msgResults);
         }
-      });
-    }
+      } else {
+        if (onFailed) {
+          onFailed(res.status, 'error');
+        }
+      }
+    });
   }
 
   /**
