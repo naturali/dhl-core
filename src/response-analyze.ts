@@ -24,14 +24,17 @@ export const analyzeKerfuResponse = (response: IKerfuResponse): MessageResult[] 
   return [];
 };
 
-const analyzeKerfuMessageList = (list: IKerfuMessage[]): MessageResult[] => {
+export const analyzeKerfuMessageList = (list: IKerfuMessage[]): MessageResult[] => {
 
   const msgs: MessageResult[] = [];
-  list.forEach((it: IKerfuMessage) => {
 
-    const msgResult = analyzeKerfuMessage(it);
-    msgs.push(msgResult);
-  });
+  if (list) {
+    list.forEach((it: IKerfuMessage) => {
+
+      const msgResult = analyzeKerfuMessage(it);
+      msgs.push(msgResult);
+    });
+  }
 
   return msgs;
 };

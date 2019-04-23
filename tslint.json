@@ -16,11 +16,18 @@
       true,
       "ban-single-arg-parens"
     ],
-    "arrow-return-shorthand": [true],
+    "arrow-return-shorthand": [
+      true
+    ],
     "ban-types": [
       true,
-      ["Object", "Use {} instead."],
-      ["String"]
+      [
+        "Object",
+        "Use {} instead."
+      ],
+      [
+        "String"
+      ]
     ],
     "class-name": true,
     "comment-format": [
@@ -47,7 +54,10 @@
     "jsx-no-bind": false,
     "jsdoc-format": true,
     "label-position": true,
-    "linebreak-style": [true, "LF"],
+    "linebreak-style": [
+      true,
+      "LF"
+    ],
     "max-line-length": [
       true,
       240
@@ -64,7 +74,10 @@
       "log",
       "error"
     ],
-    "no-consecutive-blank-lines": [true, 2],
+    "no-consecutive-blank-lines": [
+      true,
+      2
+    ],
     "no-construct": true,
     "no-debugger": true,
     "no-duplicate-super": true,
@@ -75,11 +88,16 @@
     // "no-floating-promises": true,
     // "no-for-in-array": true,
     // "no-import-side-effect": true,
-    "no-inferrable-types": [true],
+    "no-inferrable-types": [
+      true
+    ],
     "no-internal-module": true,
     "no-submodule-imports": false,
     "no-invalid-template-strings": true,
-    "no-invalid-this": [true, "check-function-in-method"],
+    "no-invalid-this": [
+      true,
+      "check-function-in-method"
+    ],
     "no-magic-numbers": false,
     "no-non-null-assertion": true,
     "no-null-keyword": true,
@@ -110,17 +128,23 @@
       "check-else",
       "check-whitespace"
     ],
-    "one-variable-per-declaration": [true, "ignore-for-loop"],
+    "one-variable-per-declaration": [
+      true,
+      "ignore-for-loop"
+    ],
     "ordered-imports": false,
     "prefer-const": true,
     "prefer-for-of": true,
-    "prefer-template": [true, "allow-single-concat"],
+    "prefer-template": [
+      true,
+      "allow-single-concat"
+    ],
     // "promise-function-async": true,
     "quotemark": [
       true,
       "single",
       "avoid-escape",
-      "jsx-single"
+      "jsx-double"
     ],
     "radix": true,
     // "restrict-plus-operands": true,
@@ -128,10 +152,12 @@
     "strict-boolean-expressions": false,
     "semicolon": [
       true,
-      "always"
+      "always",
+      "ignore-bound-class-methods"
     ],
     "space-before-function-paren": [
-      true, {
+      true,
+      {
         "anonymous": "always",
         "named": "never",
         "asyncArrow": "always"
@@ -141,7 +167,8 @@
     "switch-default": true,
     "triple-equals": true,
     "trailing-comma": [
-      true, {
+      true,
+      {
         "multiline": "never",
         "singleline": "never"
       }
@@ -151,7 +178,8 @@
     ],
     "typeof-compare": true,
     "typedef-whitespace": [
-      true, {
+      true,
+      {
         "call-signature": "nospace",
         "index-signature": "nospace",
         "parameter": "nospace",

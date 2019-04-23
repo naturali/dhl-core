@@ -7,5 +7,17 @@ export interface UserInfo {
   userId: string;
   userName?: string;
   avatar?: string;
-  type: number;
+}
+
+
+export interface AgentInfo {
+  agentId: string;
+  agentName?: string;
+  avatar?: string;
+}
+
+export interface AppInfo {
+  appId: string;
+  appKey: string;
+  appSecret: string;
 }
