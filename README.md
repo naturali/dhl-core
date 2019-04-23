@@ -30,10 +30,16 @@ Use to create your DHL(Dui Hua Liu) web client.
   import { DHL } from 'dhl-core';
 
   // Create a DHL object
-  const client = new DHL({
-    agentId: '<your agent id>',
-    agentName: '<your agent name>'
-  });
+  const client = new DHL(
+    {
+      appId: 'your app id',
+      appKey: 'your app key',
+      appSecret: 'your secret key'
+    },
+    () => {
+      // init completed
+    }
+  );
   ```
 
 - from CDN
@@ -42,43 +48,28 @@ Use to create your DHL(Dui Hua Liu) web client.
   <script src="https://dhl-sdk.oss-cn-beijing.aliyuncs.com/web_sdk/1.0.0/dhl.js"></script>
   <script>
     var client = new DHL({
-      agentId: '<your agent id>',
-      agentName: '<your agent name>'
+      appId: "your app id",
+      appKey: "your app key",
+      appSecret: "your secret key"
+    },()=>{
+      // init completed
     });
   </script>
   ```
 
 ## 🌈 Methods
 
-- Get authentication token. Need call first.
-
-  ```typescript
-  async verify(app: DHLAppInfo, callback?: (token: string) => void)
-
-  interface DHLAppInfo {
-    appId: string;
-    appKey: string;
-    appSecret: string;
-  }
-  ```
-
 - Connect Websocket and listen messages from server.
 
   ```typescript
-  connectWebsocket(params: DHLConnectParams,
-    onMessage: (message: string, messageType: string, res: any) => void,
+  connectWebsocket(user: UserInfo,
+    onMessage: (msgResults: MessageResult[]) => void,
     onOpen?: () => void,
     onClose?: () => void,
     onError?: (error: any) => void)
-
-  interface DHLConnectParams {
-    userId: string;
-    isCustomerService: boolean;
-    userName?: string;
-  }
   ```
 
-- Send messages.
+- Send messages and Receive Server callback
 
   ```typescript
   send(msgRequest: MessageRequest,
